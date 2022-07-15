@@ -75,6 +75,12 @@ public class TypeSchema extends JsonProperties implements Serializable {
             return create(SchemaType.NULL);
         } else if (type instanceof ParameterizedType) {
 
+        } else if ((type == Byte.class) || (type == Byte.TYPE)) {
+            return create(SchemaType.BYTE);
+        } else if ((type == Short.class) || (type == Short.TYPE)) {
+            return create(SchemaType.SHORT);
+        } else if ((type == char.class) || (type == Character.TYPE)) {
+            return create(SchemaType.CHAR);
         } else if (type instanceof Class) {
         }
 
@@ -85,10 +91,18 @@ public class TypeSchema extends JsonProperties implements Serializable {
         switch (type) {
             case STRING:
                 return new StringSchema();
+            case CHAR:
+                return new CharSchema();
+            case CHARACTER:
+                return new CharacterSchema();
+            case BYTE:
+                return new ByteSchema();
             case BYTES:
                 return new BytesSchema();
             case INT:
                 return new IntSchema();
+            case SHORT:
+                return new ShortSchema();
             case LONG:
                 return new LongSchema();
             case FLOAT:
