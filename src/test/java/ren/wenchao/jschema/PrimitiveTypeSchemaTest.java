@@ -2,9 +2,11 @@ package ren.wenchao.jschema;
 
 import org.junit.Test;
 
+import java.nio.ByteBuffer;
+
 import static org.junit.Assert.*;
 
-public class TypeSchemaTest {
+public class PrimitiveTypeSchemaTest {
 
     @Test
     public void test_int_schema_create() {
@@ -28,5 +30,29 @@ public class TypeSchemaTest {
     public void test_boolean_schema_create() {
         String schema = TypeSchema.getSchema(boolean.class);
         assertEquals("\"boolean\"", schema);
+    }
+
+    @Test
+    public void test_byteBuffer_schema_create() {
+        String schema = TypeSchema.getSchema(ByteBuffer.class);
+        assertEquals("\"bytes\"", schema);
+    }
+
+    @Test
+    public void test_float_schema_create() {
+        String schema = TypeSchema.getSchema(float.class);
+        assertEquals("\"float\"", schema);
+    }
+
+    @Test
+    public void test_double_schema_create() {
+        String schema = TypeSchema.getSchema(double.class);
+        assertEquals("\"double\"", schema);
+    }
+
+    @Test
+    public void test_void_schema_create() {
+        String schema = TypeSchema.getSchema(void.class);
+        assertEquals("\"null\"", schema);
     }
 }
