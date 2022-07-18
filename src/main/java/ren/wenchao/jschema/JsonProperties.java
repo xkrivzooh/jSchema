@@ -2,6 +2,7 @@ package ren.wenchao.jschema;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import java.io.IOException;
 import java.util.*;
@@ -74,6 +75,41 @@ public abstract class JsonProperties {
         }
     };
 
+    /**
+     * Adds a property with the given name <tt>name</tt> and value <tt>value</tt>.
+     * Neither <tt>name</tt> nor <tt>value</tt> can be <tt>null</tt>. It is illegal
+     * to add a property if another with the same name but different value already
+     * exists in this schema.
+     *
+     * @param name  The name of the property to add
+     * @param value The value for the property to add
+     */
+    private void addProp(String name, JsonNode value) {
+        if (reserved.contains(name))
+            throw new SchemaRuntimeException("Can't set reserved property: " + name);
+
+        if (value == null)
+            throw new SchemaRuntimeException("Can't set a property to null: " + name);
+
+        JsonNode old = props.putIfAbsent(name, value);
+        if (old != null && !old.equals(value)) {
+            throw new SchemaRuntimeException("Can't overwrite property: " + name);
+        }
+    }
+
+
+    /**
+     * Adds a property with the given name <tt>name</tt> and value <tt>value</tt>.
+     * Neither <tt>name</tt> nor <tt>value</tt> can be <tt>null</tt>. It is illegal
+     * to add a property if another with the same name but different value already
+     * exists in this schema.
+     *
+     * @param name  The name of the property to add
+     * @param value The value for the property to add
+     */
+    public void addProp(String name, String value) {
+        addProp(name, TextNode.valueOf(value));
+    }
 
     public boolean hasProps() {
         return !props.isEmpty();
@@ -85,5 +121,12 @@ public abstract class JsonProperties {
         }
     }
 
+    boolean propsEqual(JsonProperties np) {
+        return props.equals(np.props);
+    }
+
+    int propsHashCode() {
+        return props.hashCode();
+    }
 
 }
