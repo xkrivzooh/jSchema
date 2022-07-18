@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Maps;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class TypeSchema extends JsonProperties implements Serializable {
@@ -44,7 +46,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
     private static final LoadingCache<Type, TypeSchema> typeSchemaCache = CacheBuilder.newBuilder().build(new CacheLoader<Type, TypeSchema>() {
         @Override
         public TypeSchema load(Type key) throws Exception {
-            return getSchema0(key);
+            return createSchema(key, Maps.newHashMap());
         }
     });
 
@@ -56,7 +58,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
         }
     }
 
-    private static TypeSchema getSchema0(Type type) {
+    private static TypeSchema createSchema(Type type, Map<String, TypeSchema> names) {
         if (type instanceof Class && CharSequence.class.isAssignableFrom((Class) type)) {
             return create(SchemaType.STRING);
         } else if (type == ByteBuffer.class) {
@@ -72,7 +74,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
         } else if ((type == Boolean.class) || (type == Boolean.TYPE)) {
             return create(SchemaType.BOOLEAN);
         } else if ((type == Void.class) || (type == Void.TYPE)) {
-            return create(SchemaType.NULL);
+            return create(SchemaType.VOID);
         } else if (type instanceof ParameterizedType) {
 
         } else if ((type == Byte.class) || (type == Byte.TYPE)) {
@@ -82,6 +84,11 @@ public class TypeSchema extends JsonProperties implements Serializable {
         } else if ((type == char.class) || (type == Character.TYPE)) {
             return create(SchemaType.CHAR);
         } else if (type instanceof Class) {
+            Class<?> clazz = (Class<?>) type;
+            if (clazz.isPrimitive() || // primitives
+                    clazz == Void.class || clazz == Boolean.class || clazz == Integer.class || clazz == Long.class || clazz == Float.class || clazz == Double.class || clazz == Byte.class || clazz == Short.class || clazz == Character.class) {
+                return createSchema(type, names);
+            }
         }
 
         throw new SchemaRuntimeException("Unknown type: " + type);
@@ -89,20 +96,14 @@ public class TypeSchema extends JsonProperties implements Serializable {
 
     static TypeSchema create(SchemaType type) {
         switch (type) {
-            case STRING:
-                return new StringSchema();
-            case CHAR:
-                return new CharSchema();
-            case CHARACTER:
-                return new CharacterSchema();
             case BYTE:
                 return new ByteSchema();
             case BYTES:
                 return new BytesSchema();
-            case INT:
-                return new IntSchema();
             case SHORT:
                 return new ShortSchema();
+            case INT:
+                return new IntSchema();
             case LONG:
                 return new LongSchema();
             case FLOAT:
@@ -111,6 +112,12 @@ public class TypeSchema extends JsonProperties implements Serializable {
                 return new DoubleSchema();
             case BOOLEAN:
                 return new BooleanSchema();
+            case CHAR:
+                return new CharSchema();
+            case STRING:
+                return new StringSchema();
+            case VOID:
+                return new VoidSchema();
             case NULL:
                 return new NullSchema();
             default:

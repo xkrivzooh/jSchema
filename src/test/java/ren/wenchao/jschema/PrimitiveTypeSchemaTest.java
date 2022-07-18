@@ -123,6 +123,6 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_void_schema_create() {
         String schema = TypeSchema.getSchema(void.class);
-        assertEquals("\"null\"", schema);
+        assertEquals("\"void\"", schema);
     }
 }
