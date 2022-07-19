@@ -15,14 +15,13 @@ import java.io.StringWriter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TypeSchema extends JsonProperties implements Serializable {
 
     private final SchemaType type;
+
+    int hashCode = NO_HASHCODE;
     static final JsonFactory FACTORY = new JsonFactory();
     static final ObjectMapper MAPPER = new ObjectMapper(FACTORY);
     private static final int NO_HASHCODE = Integer.MIN_VALUE;
@@ -127,6 +126,75 @@ public class TypeSchema extends JsonProperties implements Serializable {
 
     public String getName() {
         return type.getName();
+    }
+
+    /** Return the type of this schema. */
+    public SchemaType getType() {
+        return type;
+    }
+
+    int computeHash() {
+        return getType().hashCode() + propsHashCode();
+    }
+
+    final boolean equalCachedHash(TypeSchema other) {
+        return (hashCode == other.hashCode) || (hashCode == NO_HASHCODE) || (other.hashCode == NO_HASHCODE);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof TypeSchema)) {
+            return false;
+        }
+        TypeSchema that = (TypeSchema) o;
+        if (!(this.type == that.type))
+            return false;
+        return equalCachedHash(that) && propsEqual(that);
+    }
+
+    @Override
+    public final int hashCode() {
+        if (hashCode == NO_HASHCODE) {
+            hashCode = computeHash();
+        }
+        return hashCode;
+    }
+
+
+    /**
+     * If this is a record, returns the Field with the given name
+     * <tt>fieldName</tt>. If there is no field by that name, a <tt>null</tt> is
+     * returned.
+     */
+    public Field getField(String fieldname) {
+        throw new SchemaRuntimeException("Not a record: " + this);
+    }
+
+    /** If this is an array, returns its element type. */
+    public TypeSchema getElementType() {
+        throw new SchemaRuntimeException("Not an array: " + this);
+    }
+
+    /** If this is a map, returns its value type. */
+    public TypeSchema getValueType() {
+        throw new SchemaRuntimeException("Not a map: " + this);
+    }
+
+    /** If this is a union, returns its types. */
+    public List<TypeSchema> getTypes() {
+        throw new SchemaRuntimeException("Not a union: " + this);
+    }
+
+
+    /**
+     * If this is a record, returns the fields in it. The returned list is in the
+     * order of their positions.
+     */
+    public List<Field> getFields() {
+        throw new SchemaRuntimeException("Not a record: " + this);
     }
 
     @Override
