@@ -6,11 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Sets the avroname for this java field. When reading into this class, a
- * reflectdatumreader looks for a schema field with the avroname.
+ * Marks a field as transient. Such a field will not get written into or read
+ * from a schema, when using reflection.
  */
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Name {
-  String value();
+@Target({ ElementType.FIELD })
+public @interface Ignore {
 }

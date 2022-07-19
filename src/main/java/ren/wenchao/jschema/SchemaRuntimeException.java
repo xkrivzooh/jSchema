@@ -1,6 +1,6 @@
 package ren.wenchao.jschema;
 
-public class SchemaRuntimeException extends RuntimeException{
+class SchemaRuntimeException extends RuntimeException{
     public SchemaRuntimeException() {
         super();
     }

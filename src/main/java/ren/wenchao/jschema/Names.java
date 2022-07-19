@@ -2,7 +2,7 @@ package ren.wenchao.jschema;
 
 import java.util.LinkedHashMap;
 
-class Names extends LinkedHashMap<Name, TypeSchema> {
+class Names extends LinkedHashMap<NameWrapper, TypeSchema> {
     private static final long serialVersionUID = 1L;
     private String space; // default namespace
 
@@ -26,10 +26,10 @@ class Names extends LinkedHashMap<Name, TypeSchema> {
         if (primitive != null) {
             return TypeSchema.create(primitive);
         }
-        Name name = new Name(o, space);
+        NameWrapper name = new NameWrapper(o, space);
         if (!containsKey(name)) {
             // if not in default try anonymous
-            name = new Name(o, "");
+            name = new NameWrapper(o, "");
         }
         return super.get(name);
     }
@@ -43,7 +43,7 @@ class Names extends LinkedHashMap<Name, TypeSchema> {
     }
 
     @Override
-    public TypeSchema put(Name name, TypeSchema schema) {
+    public TypeSchema put(NameWrapper name, TypeSchema schema) {
         if (containsKey(name)) throw new SchemaParseException("Can't redefine: " + name);
         return super.put(name, schema);
     }

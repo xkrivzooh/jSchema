@@ -6,11 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Sets the avroname for this java field. When reading into this class, a
- * reflectdatumreader looks for a schema field with the avroname.
+ * Specifies a default value for a field as a JSON string.
  */
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Name {
+@Target({ ElementType.FIELD })
+public @interface Default {
   String value();
 }

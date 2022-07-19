@@ -1,6 +1,6 @@
 package ren.wenchao.jschema;
 
-public class SchemaParseException extends SchemaRuntimeException{
+class SchemaParseException extends SchemaRuntimeException{
     public SchemaParseException() {
         super();
     }
