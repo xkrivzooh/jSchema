@@ -13,23 +13,23 @@ class MapSchema extends TypeSchema {
         this.valueType = valueType;
     }
 
-//    @Override
-//    public TypeSchema getValueType() {
-//        return valueType;
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o == this) return true;
-//        if (!(o instanceof MapSchema)) return false;
-//        MapSchema that = (MapSchema) o;
-//        return equalCachedHash(that) && valueType.equals(that.valueType) && propsEqual(that);
-//    }
-//
-//    @Override
-//    int computeHash() {
-//        return super.computeHash() + valueType.computeHash();
-//    }
+    @Override
+    public TypeSchema getValueType() {
+        return valueType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof MapSchema)) return false;
+        MapSchema that = (MapSchema) o;
+        return equalCachedHash(that) && valueType.equals(that.valueType) && propsEqual(that);
+    }
+
+    @Override
+    int computeHash() {
+        return super.computeHash() + valueType.computeHash();
+    }
 
     @Override
     void toJson(Names names, JsonGenerator gen) throws IOException {

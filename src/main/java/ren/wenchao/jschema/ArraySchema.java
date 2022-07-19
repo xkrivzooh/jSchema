@@ -13,27 +13,27 @@ class ArraySchema extends TypeSchema{
         this.elementType = elementType;
     }
 
-//    @Override
-//    public TypeSchema getElementType() {
-//        return elementType;
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o == this) {
-//            return true;
-//        }
-//        if (!(o instanceof ArraySchema)) {
-//            return false;
-//        }
-//        ArraySchema that = (ArraySchema) o;
-//        return equalCachedHash(that) && elementType.equals(that.elementType) && propsEqual(that);
-//    }
-//
-//    @Override
-//    int computeHash() {
-//        return super.computeHash() + elementType.computeHash();
-//    }
+    @Override
+    public TypeSchema getElementType() {
+        return elementType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ArraySchema)) {
+            return false;
+        }
+        ArraySchema that = (ArraySchema) o;
+        return equalCachedHash(that) && elementType.equals(that.elementType) && propsEqual(that);
+    }
+
+    @Override
+    int computeHash() {
+        return super.computeHash() + elementType.computeHash();
+    }
 
     @Override
     void toJson(Names names, JsonGenerator gen) throws IOException {
