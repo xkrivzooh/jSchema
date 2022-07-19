@@ -26,6 +26,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
 
     private static final TypeSchema THROWABLE_MESSAGE = makeNullable(TypeSchema.create(SchemaType.STRING));
 
+    public static final String PRIMITIVE_TYPE = "primitive-type";
     public static final String CLASS_PROP = "java-class";
     public static final String KEY_CLASS_PROP = "java-key-class";
     public static final String ELEMENT_PROP = "java-element-class";
@@ -50,7 +51,6 @@ public class TypeSchema extends JsonProperties implements Serializable {
      * transient.
      */
     private static Set<Class> stringableClasses = new HashSet<>(Arrays.asList(java.math.BigDecimal.class, java.math.BigInteger.class, java.net.URI.class, java.net.URL.class, java.io.File.class));
-
 
 
     TypeSchema(SchemaType type) {
@@ -105,16 +105,25 @@ public class TypeSchema extends JsonProperties implements Serializable {
                 return schema;
             }
         } else if ((type == Byte.class) || (type == Byte.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.INT);
-            result.addProp(CLASS_PROP, Byte.class.getName());
+            TypeSchema result = TypeSchema.create(SchemaType.BYTE);
+            boolean primitive = ((Class<?>) type).isPrimitive();
+            if (!primitive) {
+                result.addProp(PRIMITIVE_TYPE, primitive);
+            }
             return result;
         } else if ((type == Short.class) || (type == Short.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.INT);
-            result.addProp(CLASS_PROP, Short.class.getName());
+            TypeSchema result = TypeSchema.create(SchemaType.SHORT);
+            boolean primitive = ((Class<?>) type).isPrimitive();
+            if (!primitive) {
+                result.addProp(PRIMITIVE_TYPE, primitive);
+            }
             return result;
         } else if ((type == Character.class) || (type == Character.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.INT);
-            result.addProp(CLASS_PROP, Character.class.getName());
+            TypeSchema result = TypeSchema.create(SchemaType.CHAR);
+            boolean primitive = ((Class<?>) type).isPrimitive();
+            if (!primitive) {
+                result.addProp(PRIMITIVE_TYPE, primitive);
+            }
             return result;
         } else if (type instanceof Class) { // Class
             Class<?> c = (Class<?>) type;
@@ -245,18 +254,43 @@ public class TypeSchema extends JsonProperties implements Serializable {
             return TypeSchema.create(SchemaType.STRING);
         else if (type == ByteBuffer.class)
             return TypeSchema.create(SchemaType.BYTES);
-        else if ((type == Integer.class) || (type == Integer.TYPE))
-            return TypeSchema.create(SchemaType.INT);
-        else if ((type == Long.class) || (type == Long.TYPE))
-            return TypeSchema.create(SchemaType.LONG);
-        else if ((type == Float.class) || (type == Float.TYPE))
-            return TypeSchema.create(SchemaType.FLOAT);
-        else if ((type == Double.class) || (type == Double.TYPE))
-            return TypeSchema.create(SchemaType.DOUBLE);
-        else if ((type == Boolean.class) || (type == Boolean.TYPE))
-            return TypeSchema.create(SchemaType.BOOLEAN);
-        else if ((type == Void.class) || (type == Void.TYPE))
-            return TypeSchema.create(SchemaType.NULL);
+        else if ((type == Integer.class) || (type == Integer.TYPE)) {
+            TypeSchema result = TypeSchema.create(SchemaType.INT);
+            boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
+            if (!primitive) {
+                result.addProp(PRIMITIVE_TYPE, primitive);
+            }
+            return result;
+        } else if ((type == Long.class) || (type == Long.TYPE)) {
+            TypeSchema result = TypeSchema.create(SchemaType.LONG);
+            boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
+            if (!primitive) {
+                result.addProp(PRIMITIVE_TYPE, primitive);
+            }
+            return result;
+        } else if ((type == Float.class) || (type == Float.TYPE)) {
+            TypeSchema result = TypeSchema.create(SchemaType.FLOAT);
+            boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
+            if (!primitive) {
+                result.addProp(PRIMITIVE_TYPE, primitive);
+            }
+            return result;
+        } else if ((type == Double.class) || (type == Double.TYPE)) {
+            TypeSchema result = TypeSchema.create(SchemaType.DOUBLE);
+            boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
+            if (!primitive) {
+                result.addProp(PRIMITIVE_TYPE, primitive);
+            }
+            return result;
+        } else if ((type == Boolean.class) || (type == Boolean.TYPE)) {
+            TypeSchema result = TypeSchema.create(SchemaType.BOOLEAN);
+            boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
+            if (!primitive) {
+                result.addProp(PRIMITIVE_TYPE, primitive);
+            }
+            return result;
+        } else if ((type == Void.class) || (type == Void.TYPE))
+            return TypeSchema.create(SchemaType.VOID);
         else if (type instanceof ParameterizedType) {
             ParameterizedType ptype = (ParameterizedType) type;
             Class raw = (Class) ptype.getRawType();

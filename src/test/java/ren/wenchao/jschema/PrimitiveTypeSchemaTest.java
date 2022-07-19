@@ -1,6 +1,5 @@
 package ren.wenchao.jschema;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
@@ -18,7 +17,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_integer_schema_create() {
         String schema = TypeSchema.getSchema(Integer.class);
-        assertEquals("\"int\"", schema);
+        assertEquals("{\"type\":\"int\",\"primitive-type\":false}", schema);
     }
 
     @Test
@@ -30,7 +29,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Short_schema_create() {
         String schema = TypeSchema.getSchema(Short.class);
-        assertEquals("\"short\"", schema);
+        assertEquals("{\"type\":\"short\",\"primitive-type\":false}", schema);
     }
 
     @Test
@@ -42,7 +41,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Long_schema_create() {
         String schema = TypeSchema.getSchema(Long.class);
-        assertEquals("\"long\"", schema);
+        assertEquals("{\"type\":\"long\",\"primitive-type\":false}", schema);
     }
 
     @Test
@@ -58,11 +57,9 @@ public class PrimitiveTypeSchemaTest {
     }
 
     @Test
-    @Ignore
-    //todo 后面可以考虑移除这个类型
     public void test_Character_schema_create() {
         String schema = TypeSchema.getSchema(Character.class);
-        assertEquals("\"character\"", schema);
+        assertEquals("{\"type\":\"char\",\"primitive-type\":false}", schema);
     }
 
     @Test
@@ -74,7 +71,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Boolean_schema_create() {
         String schema = TypeSchema.getSchema(Boolean.class);
-        assertEquals("\"boolean\"", schema);
+        assertEquals("{\"type\":\"boolean\",\"primitive-type\":false}", schema);
     }
 
     @Test
@@ -86,7 +83,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Byte_schema_create() {
         String schema = TypeSchema.getSchema(Byte.class);
-        assertEquals("\"byte\"", schema);
+        assertEquals("{\"type\":\"byte\",\"primitive-type\":false}", schema);
     }
 
     @Test
@@ -104,7 +101,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Float_schema_create() {
         String schema = TypeSchema.getSchema(Float.class);
-        assertEquals("\"float\"", schema);
+        assertEquals("{\"type\":\"float\",\"primitive-type\":false}", schema);
     }
 
 
@@ -117,7 +114,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Double_schema_create() {
         String schema = TypeSchema.getSchema(Double.class);
-        assertEquals("\"double\"", schema);
+        assertEquals("{\"type\":\"double\",\"primitive-type\":false}", schema);
     }
 
     @Test
