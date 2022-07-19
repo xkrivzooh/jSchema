@@ -58,7 +58,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
         }
     }
 
-    private static TypeSchema createSchema(Type type, Map<String, TypeSchema> names) {
+    public static TypeSchema createSchema(Type type, Map<String, TypeSchema> names) {
         if (type instanceof Class && CharSequence.class.isAssignableFrom((Class) type)) {
             return create(SchemaType.STRING);
         } else if (type == ByteBuffer.class) {
