@@ -6,10 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks a field as transient. Such a field will not get written into or read
- * from a schema, when using reflection.
+ * Sets the avrodoc for this java field. When reading into this class, a
+ * reflectdatumreader looks for a schema field with the avrodoc.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
-public @interface AvroIgnore {
+@Target({ ElementType.TYPE, ElementType.FIELD })
+public @interface Doc {
+  String value();
 }

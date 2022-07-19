@@ -7,11 +7,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 abstract class NamedSchema extends TypeSchema {
-    final Name name;
+    final NameWrapper name;
     final String doc;
-    Set<Name> aliases;
+    Set<NameWrapper> aliases;
 
-    public NamedSchema(SchemaType type, Name name, String doc) {
+    public NamedSchema(SchemaType type, NameWrapper name, String doc) {
         super(type);
         this.name = name;
         this.doc = doc;
@@ -49,13 +49,13 @@ abstract class NamedSchema extends TypeSchema {
     public void addAlias(String name, String space) {
         if (aliases == null) this.aliases = new LinkedHashSet<>();
         if (space == null) space = this.name.getSpace();
-        aliases.add(new Name(name, space));
+        aliases.add(new NameWrapper(name, space));
     }
 
     @Override
     public Set<String> getAliases() {
         Set<String> result = new LinkedHashSet<>();
-        if (aliases != null) for (Name alias : aliases)
+        if (aliases != null) for (NameWrapper alias : aliases)
             result.add(alias.getFull());
         return result;
     }
@@ -87,7 +87,7 @@ abstract class NamedSchema extends TypeSchema {
         if (aliases == null || aliases.size() == 0) return;
         gen.writeFieldName("aliases");
         gen.writeStartArray();
-        for (Name alias : aliases)
+        for (NameWrapper alias : aliases)
             gen.writeString(alias.getQualified(name.getSpace()));
         gen.writeEndArray();
     }

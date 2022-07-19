@@ -5,8 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Specifies a default value for a field as a JSON string.
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.FIELD })
-public @interface AvroAliases {
-  AvroAlias[] value();
+@Target({ ElementType.FIELD })
+public @interface Default {
+  String value();
 }

@@ -14,10 +14,11 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TypeSchema extends JsonProperties implements Serializable {
+public abstract class TypeSchema extends JsonProperties implements Serializable {
 
     private final SchemaType type;
 
@@ -30,6 +31,12 @@ public class TypeSchema extends JsonProperties implements Serializable {
     public static final String CLASS_PROP = "java-class";
     public static final String KEY_CLASS_PROP = "java-key-class";
     public static final String ELEMENT_PROP = "java-element-class";
+
+    static final String NS_MAP_KEY = "key";  // name of key field
+    static final String NS_MAP_VALUE = "value"; // name of value field
+
+    static final String NS_MAP_ARRAY_RECORD = // record name prefix
+            "org.apache.avro.reflect.Pair";
 
     private static final String STRING_OUTER_PARENT_REFERENCE = "this$0";
     static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases"));
@@ -66,13 +73,18 @@ public class TypeSchema extends JsonProperties implements Serializable {
         }
     });
 
-    public static String getSchema(Type type) {
+    public static String getSchemaString(Type type) {
+        return getSchema(type).toString();
+    }
+
+    public static TypeSchema getSchema(Type type) {
         try {
-            return typeSchemaCache.get(type).toString();
+            return typeSchemaCache.get(type);
         } catch (Exception e) {
             throw (e instanceof SchemaRuntimeException) ? (SchemaRuntimeException) e : new SchemaRuntimeException(e);
         }
     }
+
 
     private static TypeSchema createSchema(Type type, Map<String, TypeSchema> names) {
         if (type instanceof GenericArrayType) { // generic array
@@ -142,7 +154,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
                 setElement(result, component);
                 return result;
             }
-            AvroSchema explicit = c.getAnnotation(AvroSchema.class);
+            Schema explicit = c.getAnnotation(Schema.class);
             if (explicit != null) // explicit schema
                 return new Parser().parse(explicit.value());
             if (CharSequence.class.isAssignableFrom(c)) // String
@@ -161,7 +173,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
             String fullName = c.getName();
             TypeSchema schema = names.get(fullName);
             if (schema == null) {
-                AvroDoc annotatedDoc = c.getAnnotation(AvroDoc.class); // Docstring
+                Doc annotatedDoc = c.getAnnotation(Doc.class); // Docstring
                 String doc = (annotatedDoc != null) ? annotatedDoc.value() : null;
                 String name = c.getSimpleName();
                 String space = c.getPackage() == null ? "" : c.getPackage().getName();
@@ -197,22 +209,22 @@ public class TypeSchema extends JsonProperties implements Serializable {
                     consumeAvroAliasAnnotation(c, schema);
                     names.put(c.getName(), schema);
                     for (java.lang.reflect.Field field : getCachedFields(c))
-                        if ((field.getModifiers() & (Modifier.TRANSIENT | Modifier.STATIC)) == 0 && !field.isAnnotationPresent(AvroIgnore.class)) {
+                        if ((field.getModifiers() & (Modifier.TRANSIENT | Modifier.STATIC)) == 0 && !field.isAnnotationPresent(Ignore.class)) {
                             TypeSchema fieldSchema = createFieldSchema(field, names);
-                            annotatedDoc = field.getAnnotation(AvroDoc.class); // Docstring
+                            annotatedDoc = field.getAnnotation(Doc.class); // Docstring
                             doc = (annotatedDoc != null) ? annotatedDoc.value() : null;
 
                             Object defaultValue = createSchemaDefaultValue(type, field, fieldSchema);
 
-                            AvroName annotatedName = field.getAnnotation(AvroName.class); // Rename fields
+                            Name annotatedName = field.getAnnotation(Name.class); // Rename fields
                             String fieldName = (annotatedName != null) ? annotatedName.value() : field.getName();
                             if (STRING_OUTER_PARENT_REFERENCE.equals(fieldName)) {
                                 throw new SchemaRuntimeException("Class " + fullName + " must be a static inner class");
                             }
                             Field recordField = new Field(fieldName, fieldSchema, doc, defaultValue);
 
-                            AvroMeta[] metadata = field.getAnnotationsByType(AvroMeta.class); // add metadata
-                            for (AvroMeta meta : metadata) {
+                            Meta[] metadata = field.getAnnotationsByType(Meta.class); // add metadata
+                            for (Meta meta : metadata) {
                                 if (recordField.getObjectProps().containsKey(meta.key())) {
                                     throw new SchemaRuntimeException("Duplicate field prop key: " + meta.key());
                                 }
@@ -230,8 +242,8 @@ public class TypeSchema extends JsonProperties implements Serializable {
                     if (error) // add Throwable message
                         fields.add(new Field("detailMessage", THROWABLE_MESSAGE, null, null));
                     schema.setFields(fields);
-                    AvroMeta[] metadata = c.getAnnotationsByType(AvroMeta.class);
-                    for (AvroMeta meta : metadata) {
+                    Meta[] metadata = c.getAnnotationsByType(Meta.class);
+                    for (Meta meta : metadata) {
                         if (schema.getObjectProps().containsKey(meta.key())) {
                             throw new SchemaRuntimeException("Duplicate type prop key: " + meta.key());
                         }
@@ -570,28 +582,28 @@ public class TypeSchema extends JsonProperties implements Serializable {
      * Create an enum schema.
      */
     public static TypeSchema createEnum(String name, String doc, String namespace, List<String> values) {
-        return new EnumSchema(new Name(name, namespace), doc, new LockableArrayList<>(values), null);
+        return new EnumSchema(new NameWrapper(name, namespace), doc, new LockableArrayList<>(values), null);
     }
 
     /**
      * Create an enum schema.
      */
     public static TypeSchema createEnum(String name, String doc, String namespace, List<String> values, String enumDefault) {
-        return new EnumSchema(new Name(name, namespace), doc, new LockableArrayList<>(values), enumDefault);
+        return new EnumSchema(new NameWrapper(name, namespace), doc, new LockableArrayList<>(values), enumDefault);
     }
 
     /**
      * Create a named record schema.
      */
     public static TypeSchema createRecord(String name, String doc, String namespace, boolean isError) {
-        return new RecordSchema(new Name(name, namespace), doc, isError);
+        return new RecordSchema(new NameWrapper(name, namespace), doc, isError);
     }
 
     /**
      * Create a named record schema with fields already set.
      */
     public static TypeSchema createRecord(String name, String doc, String namespace, boolean isError, List<Field> fields) {
-        return new RecordSchema(new Name(name, namespace), doc, isError, fields);
+        return new RecordSchema(new NameWrapper(name, namespace), doc, isError, fields);
     }
 
     /**
@@ -607,7 +619,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
 //                throw new AvroRuntimeException("Could not create schema from custom serializer for " + field.getName());
 //            }
 
-        AvroSchema explicit = field.getAnnotation(AvroSchema.class);
+        Schema explicit = field.getAnnotation(Schema.class);
         if (explicit != null) // explicit schema
             return new Parser().parse(explicit.value());
 
@@ -647,9 +659,9 @@ public class TypeSchema extends JsonProperties implements Serializable {
     }
 
     private static void consumeFieldAlias(java.lang.reflect.Field field, Field recordField) {
-        AvroAlias[] aliases = field.getAnnotationsByType(AvroAlias.class);
-        for (AvroAlias alias : aliases) {
-            if (!alias.space().equals(AvroAlias.NULL)) {
+        Alias[] aliases = field.getAnnotationsByType(Alias.class);
+        for (Alias alias : aliases) {
+            if (!alias.space().equals(Alias.NULL)) {
                 throw new SchemaRuntimeException(
                         "Namespaces are not allowed on field aliases. " + "Offending field: " + recordField.name());
             }
@@ -667,10 +679,10 @@ public class TypeSchema extends JsonProperties implements Serializable {
     }
 
     private static void consumeAvroAliasAnnotation(Class<?> c, TypeSchema schema) {
-        AvroAlias[] aliases = c.getAnnotationsByType(AvroAlias.class);
-        for (AvroAlias alias : aliases) {
+        Alias[] aliases = c.getAnnotationsByType(Alias.class);
+        for (Alias alias : aliases) {
             String space = alias.space();
-            if (AvroAlias.NULL.equals(space))
+            if (Alias.NULL.equals(space))
                 space = null;
             schema.addAlias(alias.alias(), space);
         }
@@ -736,16 +748,42 @@ public class TypeSchema extends JsonProperties implements Serializable {
      */
     //todo 这块后面需要页数处理
     private static TypeSchema createNonStringMapSchema(Type keyType, Type valueType, Map<String, TypeSchema> names) {
-        throw new UnsupportedOperationException("createNonStringMapSchema");
-//        TypeSchema keySchema = createSchema(keyType, names);
-//        TypeSchema valueSchema = createSchema(valueType, names);
-//        Field keyField = new Field(NS_MAP_KEY, keySchema, null, null);
-//        Field valueField = new Field(NS_MAP_VALUE, valueSchema, null, null);
-//        String name = getNameForNonStringMapRecord(keyType, valueType, keySchema, valueSchema);
-//        TypeSchema elementSchema = TypeSchema.createRecord(name, null, null, false);
-//        elementSchema.setFields(Arrays.asList(keyField, valueField));
-//        TypeSchema arraySchema = TypeSchema.createArray(elementSchema);
-//        return arraySchema;
+        TypeSchema keySchema = createSchema(keyType, names);
+        TypeSchema valueSchema = createSchema(valueType, names);
+        Field keyField = new Field(NS_MAP_KEY, keySchema, null, null);
+        Field valueField = new Field(NS_MAP_VALUE, valueSchema, null, null);
+        String name = getNameForNonStringMapRecord(keyType, valueType, keySchema, valueSchema);
+        TypeSchema elementSchema = TypeSchema.createRecord(name, null, null, false);
+        elementSchema.setFields(Arrays.asList(keyField, valueField));
+        return TypeSchema.createArray(elementSchema);
+    }
+
+    /*
+     * Gets a unique and consistent name per key-value pair. So if the same
+     * key-value are seen in another map, the same name is generated again.
+     */
+    private static String getNameForNonStringMapRecord(Type keyType, Type valueType, TypeSchema keySchema, TypeSchema valueSchema) {
+
+        // Generate a nice name for classes in java* package
+        if (keyType instanceof Class && valueType instanceof Class) {
+
+            Class keyClass = (Class) keyType;
+            Class valueClass = (Class) valueType;
+            Package pkg1 = keyClass.getPackage();
+            Package pkg2 = valueClass.getPackage();
+
+            if (pkg1 != null && pkg1.getName().startsWith("java") && pkg2 != null && pkg2.getName().startsWith("java")) {
+                return NS_MAP_ARRAY_RECORD + keyClass.getSimpleName() + valueClass.getSimpleName();
+            }
+        }
+
+        String name = keySchema.getFullName() + valueSchema.getFullName();
+        long fingerprint = SchemaNormalization.fingerprint64(name.getBytes(StandardCharsets.UTF_8));
+
+        if (fingerprint < 0)
+            fingerprint = -fingerprint; // ignore sign
+        String fpString = Long.toString(fingerprint, 16); // hex
+        return NS_MAP_ARRAY_RECORD + fpString;
     }
 
 
@@ -768,7 +806,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
 //            // if we can't get the default value, try to use previous code below
 //        }
 
-        AvroDefault defaultAnnotation = field.getAnnotation(AvroDefault.class);
+        Default defaultAnnotation = field.getAnnotation(Default.class);
         defaultValue = (defaultAnnotation == null) ? null : JacksonUtils.parseJsonToObject(defaultAnnotation.value());
 
         if (defaultValue == null && fieldSchema.getType() == SchemaType.UNION) {

@@ -12,15 +12,15 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD })
-@Repeatable(AvroMeta.AvroMetas.class)
-public @interface AvroMeta {
+@Repeatable(Meta.Metas.class)
+public @interface Meta {
   String key();
 
   String value();
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target({ ElementType.TYPE, ElementType.FIELD })
-  @interface AvroMetas {
-    AvroMeta[] value();
+  @interface Metas {
+    Meta[] value();
   }
 }

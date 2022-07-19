@@ -15,12 +15,12 @@ class RecordSchema extends NamedSchema {
     private static final ThreadLocal<Map> SEEN_HASHCODE = ThreadLocal.withInitial(IdentityHashMap::new);
 
 
-    public RecordSchema(Name name, String doc, boolean isError) {
+    public RecordSchema(NameWrapper name, String doc, boolean isError) {
         super(SchemaType.RECORD, name, doc);
         this.isError = isError;
     }
 
-    public RecordSchema(Name name, String doc, boolean isError, List<Field> fields) {
+    public RecordSchema(NameWrapper name, String doc, boolean isError, List<Field> fields) {
         super(SchemaType.RECORD, name, doc);
         this.isError = isError;
         setFields(fields);

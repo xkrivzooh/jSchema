@@ -6,10 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specifies a default value for a field as a JSON string.
+ * Marks a field as transient. Such a field will not get written into or read
+ * from a schema, when using reflection.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })
-public @interface AvroDefault {
-  String value();
+public @interface Ignore {
 }

@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD })
-@Repeatable(AvroAliases.class)
-public @interface AvroAlias {
+@Repeatable(Aliases.class)
+public @interface Alias {
   String NULL = "NOT A VALID NAMESPACE";
 
   String alias();

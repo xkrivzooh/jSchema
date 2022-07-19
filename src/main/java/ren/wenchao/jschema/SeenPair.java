@@ -6,7 +6,7 @@ import java.util.Map;
  * Useful as key of {@link Map}s when traversing two schemas at the same time
  * and need to watch for recursion.
  */
-public  class SeenPair {
+class SeenPair {
     private Object s1;
     private Object s2;
 

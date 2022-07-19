@@ -140,7 +140,7 @@ public class Parser {
         } else if (schema.isObject()) {
             TypeSchema result;
             String type = getRequiredText(schema, "type", "No type");
-            Name name = null;
+            NameWrapper name = null;
             String savedSpace = names.space();
             String doc = null;
             if (type.equals("record") || type.equals("error") || type.equals("enum") || type.equals("fixed")) {
@@ -148,7 +148,7 @@ public class Parser {
                 doc = getOptionalText(schema, "doc");
                 if (space == null)
                     space = names.space();
-                name = new Name(getRequiredText(schema, "name", "No name in schema"), space);
+                name = new NameWrapper(getRequiredText(schema, "name", "No name in schema"), space);
                 names.space(name.getSpace()); // set default namespace
             }
             if (PRIMITIVES.containsKey(type)) { // primitive
@@ -226,7 +226,7 @@ public class Parser {
 //                    names.add(result);
 //            }
             else { // For unions with self reference
-                Name nameFromType = new Name(type, names.space());
+                NameWrapper nameFromType = new NameWrapper(type, names.space());
                 if (names.containsKey(nameFromType)) {
                     return names.get(nameFromType);
                 }

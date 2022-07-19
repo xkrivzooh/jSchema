@@ -1,8 +1,7 @@
 package ren.wenchao.jschema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-public class Accessor {
+class Accessor {
   public abstract static class JsonPropertiesAccessor {
     protected abstract void addProp(JsonProperties props, String name, JsonNode value);
   }

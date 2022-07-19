@@ -12,7 +12,7 @@ class EnumSchema extends NamedSchema {
     private final Map<String, Integer> ordinals;
     private final String enumDefault;
 
-    public EnumSchema(Name name, String doc, LockableArrayList<String> symbols, String enumDefault) {
+    public EnumSchema(NameWrapper name, String doc, LockableArrayList<String> symbols, String enumDefault) {
         super(SchemaType.ENUM, name, doc);
         this.symbols = symbols.lock();
         this.ordinals = new HashMap<>(Math.multiplyExact(2, symbols.size()));

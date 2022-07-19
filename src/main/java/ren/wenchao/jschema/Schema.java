@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD })
 @Documented
-public @interface AvroSchema {
+public @interface Schema {
   /** The schema to use for this value. */
   String value();
 }
