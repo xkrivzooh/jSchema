@@ -45,6 +45,10 @@ class Field extends JsonProperties {
         private Order() {
             this.name = this.name().toLowerCase(Locale.ENGLISH);
         }
+
+        public String getName() {
+            return name;
+        }
     }
 
     ;
@@ -127,6 +131,10 @@ class Field extends JsonProperties {
         return position;
     }
 
+    public void pos(int position) {
+        this.position = position;
+    }
+
     /**
      * This field's {@link TypeSchema}.
      */
@@ -177,6 +185,10 @@ class Field extends JsonProperties {
     public Set<String> aliases() {
         if (aliases == null) return Collections.emptySet();
         return Collections.unmodifiableSet(aliases);
+    }
+
+    public void setAliases(Set<String> aliases) {
+        this.aliases = aliases;
     }
 
     @Override

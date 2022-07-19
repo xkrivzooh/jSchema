@@ -1,9 +1,6 @@
 package ren.wenchao.jschema;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -12,29 +9,49 @@ import com.google.common.collect.Maps;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class TypeSchema extends JsonProperties implements Serializable {
 
     private final SchemaType type;
 
     int hashCode = NO_HASHCODE;
-    static final JsonFactory FACTORY = new JsonFactory();
-    static final ObjectMapper MAPPER = new ObjectMapper(FACTORY);
-    private static final int NO_HASHCODE = Integer.MIN_VALUE;
-    private static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases"));
+    protected static final int NO_HASHCODE = Integer.MIN_VALUE;
 
-    private static final Set<String> ENUM_RESERVED = new HashSet<>(SCHEMA_RESERVED);
+    private static final TypeSchema THROWABLE_MESSAGE = makeNullable(TypeSchema.create(SchemaType.STRING));
+
+    public static final String CLASS_PROP = "java-class";
+    public static final String KEY_CLASS_PROP = "java-key-class";
+    public static final String ELEMENT_PROP = "java-element-class";
+
+    private static final String STRING_OUTER_PARENT_REFERENCE = "this$0";
+    static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases"));
+
+    static final Set<String> FIELD_RESERVED = Collections
+            .unmodifiableSet(new HashSet<>(Arrays.asList("default", "doc", "name", "order", "type", "aliases")));
+    static final Set<String> ENUM_RESERVED = new HashSet<>(SCHEMA_RESERVED);
 
     static {
         ENUM_RESERVED.add("default");
-
-        FACTORY.enable(JsonParser.Feature.ALLOW_COMMENTS);
-        FACTORY.setCodec(MAPPER);
     }
+
+    /**
+     * Read/write some common builtin classes as strings. Representing these as
+     * strings isn't always best, as they aren't always ordered ideally, but at
+     * least they're stored. Also note that, for compatibility, only classes that
+     * wouldn't be otherwise correctly readable or writable should be added here,
+     * e.g., those without a no-arg constructor or those whose fields are all
+     * transient.
+     */
+    private static Set<Class> stringableClasses = new HashSet<>(Arrays.asList(java.math.BigDecimal.class, java.math.BigInteger.class, java.net.URI.class, java.net.URL.class, java.io.File.class));
+
+
 
     TypeSchema(SchemaType type) {
         super(type == SchemaType.ENUM ? ENUM_RESERVED : SCHEMA_RESERVED);
@@ -57,39 +74,226 @@ public class TypeSchema extends JsonProperties implements Serializable {
         }
     }
 
-    public static TypeSchema createSchema(Type type, Map<String, TypeSchema> names) {
-        if (type instanceof Class && CharSequence.class.isAssignableFrom((Class) type)) {
-            return create(SchemaType.STRING);
-        } else if (type == ByteBuffer.class) {
-            return create(SchemaType.BYTES);
-        } else if ((type == Integer.class) || (type == Integer.TYPE)) {
-            return create(SchemaType.INT);
-        } else if ((type == Long.class) || (type == Long.TYPE)) {
-            return create(SchemaType.LONG);
-        } else if ((type == Float.class) || (type == Float.TYPE)) {
-            return create(SchemaType.FLOAT);
-        } else if ((type == Double.class) || (type == Double.TYPE)) {
-            return create(SchemaType.DOUBLE);
-        } else if ((type == Boolean.class) || (type == Boolean.TYPE)) {
-            return create(SchemaType.BOOLEAN);
-        } else if ((type == Void.class) || (type == Void.TYPE)) {
-            return create(SchemaType.VOID);
-        } else if (type instanceof ParameterizedType) {
-
-        } else if ((type == Byte.class) || (type == Byte.TYPE)) {
-            return create(SchemaType.BYTE);
-        } else if ((type == Short.class) || (type == Short.TYPE)) {
-            return create(SchemaType.SHORT);
-        } else if ((type == char.class) || (type == Character.TYPE)) {
-            return create(SchemaType.CHAR);
-        } else if (type instanceof Class) {
-            Class<?> clazz = (Class<?>) type;
-            if (clazz.isPrimitive() || // primitives
-                    clazz == Void.class || clazz == Boolean.class || clazz == Integer.class || clazz == Long.class || clazz == Float.class || clazz == Double.class || clazz == Byte.class || clazz == Short.class || clazz == Character.class) {
-                return createSchema(type, names);
+    private static TypeSchema createSchema(Type type, Map<String, TypeSchema> names) {
+        if (type instanceof GenericArrayType) { // generic array
+            Type component = ((GenericArrayType) type).getGenericComponentType();
+            if (component == Byte.TYPE) {// byte array
+                return TypeSchema.create(SchemaType.BYTES);
             }
-        }
+            TypeSchema result = TypeSchema.createArray(createSchema(component, names));
+            setElement(result, component);
+            return result;
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType ptype = (ParameterizedType) type;
+            Class raw = (Class) ptype.getRawType();
+            Type[] params = ptype.getActualTypeArguments();
+            if (Map.class.isAssignableFrom(raw)) { // Map
+                Class key = (Class) params[0];
+                if (isStringable(key)) { // Stringable key
+                    TypeSchema schema = TypeSchema.createMap(createSchema(params[1], names));
+                    schema.addProp(KEY_CLASS_PROP, key.getName());
+                    return schema;
+                } else if (key != String.class) {
+                    TypeSchema schema = createNonStringMapSchema(params[0], params[1], names);
+                    schema.addProp(CLASS_PROP, raw.getName());
+                    return schema;
+                }
+            } else if (Collection.class.isAssignableFrom(raw)) { // Collection
+                if (params.length != 1) throw new SchemaRuntimeException("No array type specified.");
+                TypeSchema schema = TypeSchema.createArray(createSchema(params[0], names));
+                schema.addProp(CLASS_PROP, raw.getName());
+                return schema;
+            }
+        } else if ((type == Byte.class) || (type == Byte.TYPE)) {
+            TypeSchema result = TypeSchema.create(SchemaType.INT);
+            result.addProp(CLASS_PROP, Byte.class.getName());
+            return result;
+        } else if ((type == Short.class) || (type == Short.TYPE)) {
+            TypeSchema result = TypeSchema.create(SchemaType.INT);
+            result.addProp(CLASS_PROP, Short.class.getName());
+            return result;
+        } else if ((type == Character.class) || (type == Character.TYPE)) {
+            TypeSchema result = TypeSchema.create(SchemaType.INT);
+            result.addProp(CLASS_PROP, Character.class.getName());
+            return result;
+        } else if (type instanceof Class) { // Class
+            Class<?> c = (Class<?>) type;
+            if (c.isPrimitive() || // primitives
+                    c == Void.class || c == Boolean.class || c == Integer.class || c == Long.class || c == Float.class || c == Double.class || c == Byte.class || c == Short.class || c == Character.class)
+                return createSchema0(type, names);
+            if (c.isArray()) { // array
+                Class component = c.getComponentType();
+                if (component == Byte.TYPE) { // byte array
+                    TypeSchema result = TypeSchema.create(SchemaType.BYTES);
+                    result.addProp(CLASS_PROP, c.getName());
+                    return result;
+                }
+                TypeSchema result = TypeSchema.createArray(createSchema(component, names));
+                result.addProp(CLASS_PROP, c.getName());
+                setElement(result, component);
+                return result;
+            }
+            AvroSchema explicit = c.getAnnotation(AvroSchema.class);
+            if (explicit != null) // explicit schema
+                return new Parser().parse(explicit.value());
+            if (CharSequence.class.isAssignableFrom(c)) // String
+                return TypeSchema.create(SchemaType.STRING);
+            if (ByteBuffer.class.isAssignableFrom(c)) // bytes
+                return TypeSchema.create(SchemaType.BYTES);
+            if (Collection.class.isAssignableFrom(c)) {
+                // array
+                throw new SchemaRuntimeException("Can't find element type of Collection");
+            }
+            //todo 暂不支持Conversion
+//            Conversion<?> conversion = getConversionByClass(c);
+//            if (conversion != null) {
+//                return conversion.getRecommendedSchema();
+//            }
+            String fullName = c.getName();
+            TypeSchema schema = names.get(fullName);
+            if (schema == null) {
+                AvroDoc annotatedDoc = c.getAnnotation(AvroDoc.class); // Docstring
+                String doc = (annotatedDoc != null) ? annotatedDoc.value() : null;
+                String name = c.getSimpleName();
+                String space = c.getPackage() == null ? "" : c.getPackage().getName();
+                if (c.getEnclosingClass() != null) // nested class
+                    space = c.getEnclosingClass().getName();
+                Union union = c.getAnnotation(Union.class);
+                if (union != null) { // union annotated
+                    return getAnnotatedUnion(union, names);
+                } else if (isStringable(c)) { // Stringable
+                    TypeSchema result = TypeSchema.create(SchemaType.STRING);
+                    result.addProp(CLASS_PROP, c.getName());
+                    return result;
+                } else if (c.isEnum()) { // Enum
+                    List<String> symbols = new ArrayList<>();
+                    Enum[] constants = (Enum[]) c.getEnumConstants();
+                    for (Enum constant : constants)
+                        symbols.add(constant.name());
+                    schema = TypeSchema.createEnum(name, doc, space, symbols);
+                    consumeAvroAliasAnnotation(c, schema);
+                }
+                //todo 暂不支持GenericFixed和IndexedRecord
+//                else if (GenericFixed.class.isAssignableFrom(c)) { // fixed
+//                    int size = c.getAnnotation(FixedSize.class).value();
+//                    schema = TypeSchema.createFixed(name, doc, space, size);
+//                    consumeAvroAliasAnnotation(c, schema);
+//                } else if (IndexedRecord.class.isAssignableFrom(c)) { // specific
+//                    return super.createSchema(type, names);
+//                }
+                else { // record
+                    List<Field> fields = new ArrayList<>();
+                    boolean error = Throwable.class.isAssignableFrom(c);
+                    schema = TypeSchema.createRecord(name, doc, space, error);
+                    consumeAvroAliasAnnotation(c, schema);
+                    names.put(c.getName(), schema);
+                    for (java.lang.reflect.Field field : getCachedFields(c))
+                        if ((field.getModifiers() & (Modifier.TRANSIENT | Modifier.STATIC)) == 0 && !field.isAnnotationPresent(AvroIgnore.class)) {
+                            TypeSchema fieldSchema = createFieldSchema(field, names);
+                            annotatedDoc = field.getAnnotation(AvroDoc.class); // Docstring
+                            doc = (annotatedDoc != null) ? annotatedDoc.value() : null;
 
+                            Object defaultValue = createSchemaDefaultValue(type, field, fieldSchema);
+
+                            AvroName annotatedName = field.getAnnotation(AvroName.class); // Rename fields
+                            String fieldName = (annotatedName != null) ? annotatedName.value() : field.getName();
+                            if (STRING_OUTER_PARENT_REFERENCE.equals(fieldName)) {
+                                throw new SchemaRuntimeException("Class " + fullName + " must be a static inner class");
+                            }
+                            Field recordField = new Field(fieldName, fieldSchema, doc, defaultValue);
+
+                            AvroMeta[] metadata = field.getAnnotationsByType(AvroMeta.class); // add metadata
+                            for (AvroMeta meta : metadata) {
+                                if (recordField.getObjectProps().containsKey(meta.key())) {
+                                    throw new SchemaRuntimeException("Duplicate field prop key: " + meta.key());
+                                }
+                                recordField.addProp(meta.key(), meta.value());
+                            }
+                            for (Field f : fields) {
+                                if (f.name().equals(fieldName))
+                                    throw new SchemaRuntimeException("double field entry: " + fieldName);
+                            }
+
+                            consumeFieldAlias(field, recordField);
+
+                            fields.add(recordField);
+                        }
+                    if (error) // add Throwable message
+                        fields.add(new Field("detailMessage", THROWABLE_MESSAGE, null, null));
+                    schema.setFields(fields);
+                    AvroMeta[] metadata = c.getAnnotationsByType(AvroMeta.class);
+                    for (AvroMeta meta : metadata) {
+                        if (schema.getObjectProps().containsKey(meta.key())) {
+                            throw new SchemaRuntimeException("Duplicate type prop key: " + meta.key());
+                        }
+                        schema.addProp(meta.key(), meta.value());
+                    }
+                }
+                names.put(fullName, schema);
+            }
+            return schema;
+        }
+        return createSchema0(type, names);
+    }
+
+    /**
+     * Create the schema for a Java type.
+     */
+    @SuppressWarnings(value = "unchecked")
+    protected static TypeSchema createSchema0(java.lang.reflect.Type type, Map<String, TypeSchema> names) {
+        if (type instanceof Class && CharSequence.class.isAssignableFrom((Class) type))
+            return TypeSchema.create(SchemaType.STRING);
+        else if (type == ByteBuffer.class)
+            return TypeSchema.create(SchemaType.BYTES);
+        else if ((type == Integer.class) || (type == Integer.TYPE))
+            return TypeSchema.create(SchemaType.INT);
+        else if ((type == Long.class) || (type == Long.TYPE))
+            return TypeSchema.create(SchemaType.LONG);
+        else if ((type == Float.class) || (type == Float.TYPE))
+            return TypeSchema.create(SchemaType.FLOAT);
+        else if ((type == Double.class) || (type == Double.TYPE))
+            return TypeSchema.create(SchemaType.DOUBLE);
+        else if ((type == Boolean.class) || (type == Boolean.TYPE))
+            return TypeSchema.create(SchemaType.BOOLEAN);
+        else if ((type == Void.class) || (type == Void.TYPE))
+            return TypeSchema.create(SchemaType.NULL);
+        else if (type instanceof ParameterizedType) {
+            ParameterizedType ptype = (ParameterizedType) type;
+            Class raw = (Class) ptype.getRawType();
+            java.lang.reflect.Type[] params = ptype.getActualTypeArguments();
+            if (Collection.class.isAssignableFrom(raw)) { // array
+                if (params.length != 1)
+                    throw new SchemaRuntimeException("No array type specified.");
+                return TypeSchema.createArray(createSchema0(params[0], names));
+            } else if (Map.class.isAssignableFrom(raw)) { // map
+                java.lang.reflect.Type key = params[0];
+                java.lang.reflect.Type value = params[1];
+                if (!(key instanceof Class && CharSequence.class.isAssignableFrom((Class) key)))
+                    throw new SchemaRuntimeException("Map key class not CharSequence: " + key);
+                return TypeSchema.createMap(createSchema0(value, names));
+            } else {
+                return createSchema0(raw, names);
+            }
+        } else if (type instanceof Class) { // class
+            Class c = (Class) type;
+            String fullName = c.getName();
+            TypeSchema schema = names.get(fullName);
+            if (schema == null)
+                try {
+                    schema = (TypeSchema) (c.getDeclaredField("SCHEMA$").get(null));
+
+                    if (!fullName.equals(getClassName(schema)))
+                        // HACK: schema mismatches class. maven shade plugin? try replacing.
+                        schema = new Parser()
+                                .parse(schema.toString().replace(schema.getNamespace(), c.getPackage().getName()));
+                } catch (NoSuchFieldException e) {
+                    throw new SchemaRuntimeException("Not a Specific class: " + c);
+                } catch (IllegalAccessException e) {
+                    throw new SchemaRuntimeException(e);
+                }
+            names.put(fullName, schema);
+            return schema;
+        }
         throw new SchemaRuntimeException("Unknown type: " + type);
     }
 
@@ -124,11 +328,163 @@ public class TypeSchema extends JsonProperties implements Serializable {
         }
     }
 
+    /**
+     * Returns the Java class name indicated by a schema's name and namespace.
+     */
+    public static String getClassName(TypeSchema schema) {
+        String namespace = schema.getNamespace();
+        String name = schema.getName();
+        if (namespace == null || "".equals(namespace))
+            return name;
+        String dot = namespace.endsWith("$") ? "" : "."; // back-compatibly handle $
+        return namespace + dot + name;
+    }
+
+
+    private static final Map<Class<?>, java.lang.reflect.Field[]> FIELDS_CACHE = new ConcurrentHashMap<>();
+
+    // Return of this class and its superclasses to serialize.
+    private static java.lang.reflect.Field[] getCachedFields(Class<?> recordClass) {
+        return FIELDS_CACHE.computeIfAbsent(recordClass, rc -> getFields(rc, true));
+    }
+
+    private static java.lang.reflect.Field[] getFields(Class<?> recordClass, boolean excludeJava) {
+        java.lang.reflect.Field[] fieldsList;
+        Map<String, java.lang.reflect.Field> fields = new LinkedHashMap<>();
+        Class<?> c = recordClass;
+        do {
+            if (excludeJava && c.getPackage() != null && c.getPackage().getName().startsWith("java."))
+                break; // skip java built-in classes
+            java.lang.reflect.Field[] declaredFields = c.getDeclaredFields();
+            Arrays.sort(declaredFields, Comparator.comparing(java.lang.reflect.Field::getName));
+            for (java.lang.reflect.Field field : declaredFields)
+                if ((field.getModifiers() & (Modifier.TRANSIENT | Modifier.STATIC)) == 0)
+                    if (fields.put(field.getName(), field) != null)
+                        throw new SchemaRuntimeException(c + " contains two fields named: " + field);
+            c = c.getSuperclass();
+        } while (c != null);
+        fieldsList = fields.values().toArray(new java.lang.reflect.Field[0]);
+        return fieldsList;
+    }
+
+    //True if a class should be serialized with toString().
+    private static boolean isStringable(Class<?> c) {
+        return c.isAnnotationPresent(Stringable.class) || stringableClasses.contains(c);
+    }
+
+    // if array element type is a class with a union annotation, note it
+    // this is required because we cannot set a property on the union itself
+    private static void setElement(TypeSchema schema, Type element) {
+        if (!(element instanceof Class)) {
+            return;
+        }
+        Class<?> c = (Class<?>) element;
+        Union union = c.getAnnotation(Union.class);
+        if (union != null) {// element is annotated union
+            schema.addProp(ELEMENT_PROP, c.getName());
+        }
+    }
+
+    /**
+     * If this is a record, enum or fixed, add an alias.
+     */
+    public void addAlias(String alias) {
+        throw new SchemaRuntimeException("Not a named type: " + this);
+    }
+
+    /**
+     * If this is a record, enum or fixed, add an alias.
+     */
+    public void addAlias(String alias, String space) {
+        throw new SchemaRuntimeException("Not a named type: " + this);
+    }
+
+    /**
+     * If this is a record, enum or fixed, return its aliases, if any.
+     */
+    public Set<String> getAliases() {
+        throw new SchemaRuntimeException("Not a named type: " + this);
+    }
+
+
+    /**
+     * Returns true if this record is an error type.
+     */
+    public boolean isError() {
+        throw new SchemaRuntimeException("Not a record: " + this);
+    }
+
+    /**
+     * If this is a record, set its fields. The fields can be set only once in a
+     * schema.
+     */
+    public void setFields(List<Field> fields) {
+        throw new SchemaRuntimeException("Not a record: " + this);
+    }
+
+    void fieldsToJson(Names names, JsonGenerator gen) throws IOException {
+        throw new SchemaRuntimeException("Not a record: " + this);
+    }
+
     public String getName() {
         return type.getName();
     }
 
-    /** Return the type of this schema. */
+    /**
+     * If this is a record, enum or fixed, returns its namespace, if any.
+     */
+    public String getNamespace() {
+        throw new SchemaRuntimeException("Not a named type: " + this);
+    }
+
+    /**
+     * If this is an enum, return its symbols.
+     */
+    public List<String> getEnumSymbols() {
+        throw new SchemaRuntimeException("Not an enum: " + this);
+    }
+
+    /**
+     * If this is an enum, return its default value.
+     */
+    public String getEnumDefault() {
+        throw new SchemaRuntimeException("Not an enum: " + this);
+    }
+
+    /**
+     * If this is an enum, return a symbol's ordinal value.
+     */
+    public int getEnumOrdinal(String symbol) {
+        throw new SchemaRuntimeException("Not an enum: " + this);
+    }
+
+    /**
+     * If this is an enum, returns true if it contains given symbol.
+     */
+    public boolean hasEnumSymbol(String symbol) {
+        throw new SchemaRuntimeException("Not an enum: " + this);
+    }
+
+
+    /**
+     * If this is a record, enum, or fixed, returns its docstring, if available.
+     * Otherwise, returns null.
+     */
+    public String getDoc() {
+        return null;
+    }
+
+    /**
+     * If this is a record, enum or fixed, returns its namespace-qualified name,
+     * otherwise returns the name of the primitive type.
+     */
+    public String getFullName() {
+        return getName();
+    }
+
+    /**
+     * Return the type of this schema.
+     */
     public SchemaType getType() {
         return type;
     }
@@ -150,8 +506,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
             return false;
         }
         TypeSchema that = (TypeSchema) o;
-        if (!(this.type == that.type))
-            return false;
+        if (!(this.type == that.type)) return false;
         return equalCachedHash(that) && propsEqual(that);
     }
 
@@ -161,6 +516,130 @@ public class TypeSchema extends JsonProperties implements Serializable {
             hashCode = computeHash();
         }
         return hashCode;
+    }
+
+    /**
+     * If this is a union, return the branch with the provided full name.
+     */
+    public Integer getIndexNamed(String name) {
+        throw new SchemaRuntimeException("Not a union: " + this);
+    }
+
+    /**
+     * Create a union schema.
+     */
+    public static TypeSchema createUnion(List<TypeSchema> types) {
+        return new UnionSchema(new LockableArrayList<>(types));
+    }
+
+    /**
+     * Create an enum schema.
+     */
+    public static TypeSchema createEnum(String name, String doc, String namespace, List<String> values) {
+        return new EnumSchema(new Name(name, namespace), doc, new LockableArrayList<>(values), null);
+    }
+
+    /**
+     * Create an enum schema.
+     */
+    public static TypeSchema createEnum(String name, String doc, String namespace, List<String> values, String enumDefault) {
+        return new EnumSchema(new Name(name, namespace), doc, new LockableArrayList<>(values), enumDefault);
+    }
+
+    /**
+     * Create a named record schema.
+     */
+    public static TypeSchema createRecord(String name, String doc, String namespace, boolean isError) {
+        return new RecordSchema(new Name(name, namespace), doc, isError);
+    }
+
+    /**
+     * Create a named record schema with fields already set.
+     */
+    public static TypeSchema createRecord(String name, String doc, String namespace, boolean isError, List<Field> fields) {
+        return new RecordSchema(new Name(name, namespace), doc, isError, fields);
+    }
+
+    /**
+     * Create a schema for a field.
+     */
+    protected static TypeSchema createFieldSchema(java.lang.reflect.Field field, Map<String, TypeSchema> names) {
+        //todo暂不支持AvroEncode
+//        AvroEncode enc = field.getAnnotation(AvroEncode.class);
+//        if (enc != null)
+//            try {
+//                return enc.using().getDeclaredConstructor().newInstance().getSchema();
+//            } catch (Exception e) {
+//                throw new AvroRuntimeException("Could not create schema from custom serializer for " + field.getName());
+//            }
+
+        AvroSchema explicit = field.getAnnotation(AvroSchema.class);
+        if (explicit != null) // explicit schema
+            return new Parser().parse(explicit.value());
+
+        Union union = field.getAnnotation(Union.class);
+        if (union != null)
+            return getAnnotatedUnion(union, names);
+
+        TypeSchema schema = createSchema(field.getGenericType(), names);
+        if (field.isAnnotationPresent(Stringable.class)) { // Stringable
+            schema = TypeSchema.create(SchemaType.STRING);
+        }
+        if (field.isAnnotationPresent(Nullable.class)) // nullable
+            schema = makeNullable(schema);
+        return schema;
+    }
+
+    /**
+     * Create and return a union of the null schema and the provided schema.
+     */
+    public static TypeSchema makeNullable(TypeSchema schema) {
+        if (schema.getType() == SchemaType.UNION) {
+            // check to see if the union already contains NULL
+            for (TypeSchema subType : schema.getTypes()) {
+                if (subType.getType() == SchemaType.NULL) {
+                    return schema;
+                }
+            }
+            // add null as the first type in a new union
+            List<TypeSchema> withNull = new ArrayList<>();
+            withNull.add(TypeSchema.create(SchemaType.NULL));
+            withNull.addAll(schema.getTypes());
+            return TypeSchema.createUnion(withNull);
+        } else {
+            // create a union with null
+            return TypeSchema.createUnion(Arrays.asList(TypeSchema.create(SchemaType.NULL), schema));
+        }
+    }
+
+    private static void consumeFieldAlias(java.lang.reflect.Field field, Field recordField) {
+        AvroAlias[] aliases = field.getAnnotationsByType(AvroAlias.class);
+        for (AvroAlias alias : aliases) {
+            if (!alias.space().equals(AvroAlias.NULL)) {
+                throw new SchemaRuntimeException(
+                        "Namespaces are not allowed on field aliases. " + "Offending field: " + recordField.name());
+            }
+            recordField.addAlias(alias.alias());
+        }
+    }
+
+
+    // construct a schema from a union annotation
+    private static TypeSchema getAnnotatedUnion(Union union, Map<String, TypeSchema> names) {
+        List<TypeSchema> branches = new ArrayList<>();
+        for (Class branch : union.value())
+            branches.add(createSchema(branch, names));
+        return TypeSchema.createUnion(branches);
+    }
+
+    private static void consumeAvroAliasAnnotation(Class<?> c, TypeSchema schema) {
+        AvroAlias[] aliases = c.getAnnotationsByType(AvroAlias.class);
+        for (AvroAlias alias : aliases) {
+            String space = alias.space();
+            if (AvroAlias.NULL.equals(space))
+                space = null;
+            schema.addAlias(alias.alias(), space);
+        }
     }
 
 
@@ -173,17 +652,23 @@ public class TypeSchema extends JsonProperties implements Serializable {
         throw new SchemaRuntimeException("Not a record: " + this);
     }
 
-    /** If this is an array, returns its element type. */
+    /**
+     * If this is an array, returns its element type.
+     */
     public TypeSchema getElementType() {
         throw new SchemaRuntimeException("Not an array: " + this);
     }
 
-    /** If this is a map, returns its value type. */
+    /**
+     * If this is a map, returns its value type.
+     */
     public TypeSchema getValueType() {
         throw new SchemaRuntimeException("Not a map: " + this);
     }
 
-    /** If this is a union, returns its types. */
+    /**
+     * If this is a union, returns its types.
+     */
     public List<TypeSchema> getTypes() {
         throw new SchemaRuntimeException("Not a union: " + this);
     }
@@ -197,6 +682,71 @@ public class TypeSchema extends JsonProperties implements Serializable {
         throw new SchemaRuntimeException("Not a record: " + this);
     }
 
+    /**
+     * Create an array schema.
+     */
+    public static TypeSchema createArray(TypeSchema elementType) {
+        return new ArraySchema(elementType);
+    }
+
+    /**
+     * Create a map schema.
+     */
+    public static TypeSchema createMap(TypeSchema valueType) {
+        return new MapSchema(valueType);
+    }
+
+    /*
+     * Non-string map-keys need special handling and we convert it to an array of
+     * records as: [{"key":{...}, "value":{...}}]
+     */
+    //todo 这块后面需要页数处理
+    private static TypeSchema createNonStringMapSchema(Type keyType, Type valueType, Map<String, TypeSchema> names) {
+        throw new UnsupportedOperationException("createNonStringMapSchema");
+//        TypeSchema keySchema = createSchema(keyType, names);
+//        TypeSchema valueSchema = createSchema(valueType, names);
+//        Field keyField = new Field(NS_MAP_KEY, keySchema, null, null);
+//        Field valueField = new Field(NS_MAP_VALUE, valueSchema, null, null);
+//        String name = getNameForNonStringMapRecord(keyType, valueType, keySchema, valueSchema);
+//        TypeSchema elementSchema = TypeSchema.createRecord(name, null, null, false);
+//        elementSchema.setFields(Arrays.asList(keyField, valueField));
+//        TypeSchema arraySchema = TypeSchema.createArray(elementSchema);
+//        return arraySchema;
+    }
+
+
+    /**
+     * Get default value for a schema field. Derived classes can override this
+     * method to provide values based on object instantiation
+     *
+     * @param type        Type
+     * @param field       Field
+     * @param fieldSchema Schema of the field
+     * @return The default value
+     */
+    protected static Object createSchemaDefaultValue(Type type, java.lang.reflect.Field field, TypeSchema fieldSchema) {
+        Object defaultValue;
+//        if (defaultGenerated) {
+//            defaultValue = getOrCreateDefaultValue(type, field);
+//            if (defaultValue != null) {
+//                return deepCopy(fieldSchema, defaultValue);
+//            }
+//            // if we can't get the default value, try to use previous code below
+//        }
+
+        AvroDefault defaultAnnotation = field.getAnnotation(AvroDefault.class);
+        defaultValue = (defaultAnnotation == null) ? null : JacksonUtils.parseJsonToObject(defaultAnnotation.value());
+
+        if (defaultValue == null && fieldSchema.getType() == SchemaType.UNION) {
+            TypeSchema defaultType = fieldSchema.getTypes().get(0);
+            if (defaultType.getType() == SchemaType.NULL) {
+                defaultValue = JsonProperties.NULL_VALUE;
+            }
+        }
+        return defaultValue;
+    }
+
+
     @Override
     public String toString() {
         return toString(false);
@@ -209,7 +759,7 @@ public class TypeSchema extends JsonProperties implements Serializable {
     String toString(Names names, boolean pretty) {
         try {
             StringWriter writer = new StringWriter();
-            JsonGenerator gen = FACTORY.createGenerator(writer);
+            JsonGenerator gen = JacksonUtils.getFactory().createGenerator(writer);
             if (pretty) {
                 gen.useDefaultPrettyPrinter();
             }

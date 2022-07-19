@@ -2,14 +2,12 @@ package ren.wenchao.jschema;
 
 class NameUtils {
 
-    private static ThreadLocal<Boolean> validateNames = ThreadLocal.withInitial(() -> true);
+    static ThreadLocal<Boolean> validateNames = ThreadLocal.withInitial(() -> true);
 
     static String validateName(String name) {
-        if (!validateNames.get())
-            return name; // not validating names
+        if (!validateNames.get()) return name; // not validating names
         int length = name.length();
-        if (length == 0)
-            throw new SchemaParseException("Empty name");
+        if (length == 0) throw new SchemaParseException("Empty name");
         char first = name.charAt(0);
         if (!(Character.isLetter(first) || first == '_'))
             throw new SchemaParseException("Illegal initial character: " + name);
