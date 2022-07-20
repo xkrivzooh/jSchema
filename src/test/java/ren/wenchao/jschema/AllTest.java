@@ -7,7 +7,9 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         PrimitiveTypeSchemaTest.class,
         ClassTypeSchemaTest.class,
-        CollectionTypeSchemaTest.class
-        })
+        CollectionTypeSchemaTest.class,
+        RecordSchemaTest.class,
+        FieldSchemaTest.class
+})
 public class AllTest {
 }
