@@ -105,11 +105,12 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                     TypeSchema schema = TypeSchema.createMap(createSchema(params[0], names), createSchema(params[1], names));
                     schema.addProp(KEY_CLASS_PROP, key.getName());
                     return schema;
-                } else if (key != String.class) {
-                    TypeSchema schema = createNonStringMapSchema(params[0], params[1], names);
-                    schema.addProp(CLASS_PROP, raw.getName());
-                    return schema;
                 }
+                TypeSchema keySchema = createSchema(params[0], names);
+                TypeSchema valueSchema = createSchema(params[1], names);
+                TypeSchema schema = TypeSchema.createMap(keySchema, valueSchema);
+                schema.addProp(CLASS_PROP, raw.getName());
+                return schema;
             } else if (Collection.class.isAssignableFrom(raw)) { // Collection
                 if (params.length != 1) throw new SchemaRuntimeException("No array type specified.");
                 TypeSchema schema = TypeSchema.createArray(createSchema(params[0], names));
@@ -743,51 +744,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     public static TypeSchema createMap(TypeSchema keyType, TypeSchema valueType) {
         return new MapSchema(keyType, valueType);
     }
-
-    /*
-     * Non-string map-keys need special handling and we convert it to an array of
-     * records as: [{"key":{...}, "value":{...}}]
-     */
-    //todo 针对Map类型特殊处理
-    private static TypeSchema createNonStringMapSchema(Type keyType, Type valueType, Map<String, TypeSchema> names) {
-        TypeSchema keySchema = createSchema(keyType, names);
-        TypeSchema valueSchema = createSchema(valueType, names);
-        Field keyField = new Field(NS_MAP_KEY, keySchema, null, null);
-        Field valueField = new Field(NS_MAP_VALUE, valueSchema, null, null);
-        String name = getNameForNonStringMapRecord(keyType, valueType, keySchema, valueSchema);
-        TypeSchema elementSchema = TypeSchema.createRecord(name, null, null, false);
-        elementSchema.setFields(Arrays.asList(keyField, valueField));
-        return TypeSchema.createArray(elementSchema);
-    }
-
-    /*
-     * Gets a unique and consistent name per key-value pair. So if the same
-     * key-value are seen in another map, the same name is generated again.
-     */
-    private static String getNameForNonStringMapRecord(Type keyType, Type valueType, TypeSchema keySchema, TypeSchema valueSchema) {
-
-        // Generate a nice name for classes in java* package
-        if (keyType instanceof Class && valueType instanceof Class) {
-
-            Class keyClass = (Class) keyType;
-            Class valueClass = (Class) valueType;
-            Package pkg1 = keyClass.getPackage();
-            Package pkg2 = valueClass.getPackage();
-
-            if (pkg1 != null && pkg1.getName().startsWith("java") && pkg2 != null && pkg2.getName().startsWith("java")) {
-                return NS_MAP_ARRAY_RECORD + keyClass.getSimpleName() + valueClass.getSimpleName();
-            }
-        }
-
-        String name = keySchema.getFullName() + valueSchema.getFullName();
-        long fingerprint = SchemaNormalization.fingerprint64(name.getBytes(StandardCharsets.UTF_8));
-
-        if (fingerprint < 0)
-            fingerprint = -fingerprint; // ignore sign
-        String fpString = Long.toString(fingerprint, 16); // hex
-        return NS_MAP_ARRAY_RECORD + fpString;
-    }
-
 
     /**
      * Get default value for a schema field. Derived classes can override this

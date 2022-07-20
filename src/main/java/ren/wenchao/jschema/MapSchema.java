@@ -15,6 +15,7 @@ class MapSchema extends TypeSchema {
         this.valueType = valueType;
     }
 
+    @Override
     public TypeSchema getKeyType() {
         return keyType;
     }
@@ -29,12 +30,12 @@ class MapSchema extends TypeSchema {
         if (o == this) return true;
         if (!(o instanceof MapSchema)) return false;
         MapSchema that = (MapSchema) o;
-        return equalCachedHash(that) && valueType.equals(that.valueType) && propsEqual(that);
+        return equalCachedHash(that) && keyType.equals(that.keyType) && valueType.equals(that.valueType) && propsEqual(that);
     }
 
     @Override
     int computeHash() {
-        return super.computeHash() + valueType.computeHash();
+        return super.computeHash() + keyType.computeHash() + valueType.computeHash();
     }
 
     @Override
