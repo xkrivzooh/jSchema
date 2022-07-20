@@ -1,5 +1,6 @@
 package ren.wenchao.jschema;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -44,6 +45,45 @@ public class ClassTypeSchemaTest {
     @Test
     public void test2() {
         String bSchema = TypeSchema.getSchema(C.class).toString(true);
-        System.out.println(bSchema);
+        Assert.assertEquals("{\n" +
+                "  \"type\" : \"record\",\n" +
+                "  \"name\" : \"C\",\n" +
+                "  \"namespace\" : \"ren.wenchao.jschema.ClassTypeSchemaTest\",\n" +
+                "  \"types\" : {\n" +
+                "    \"ren.wenchao.jschema.ClassTypeSchemaTest.A\" : {\n" +
+                "      \"type\" : \"record\",\n" +
+                "      \"name\" : \"A\",\n" +
+                "      \"namespace\" : \"ren.wenchao.jschema.ClassTypeSchemaTest\",\n" +
+                "      \"types\" : { },\n" +
+                "      \"fields\" : [ {\n" +
+                "        \"name\" : \"i1\",\n" +
+                "        \"type\" : \"int\"\n" +
+                "      } ]\n" +
+                "    },\n" +
+                "    \"ren.wenchao.jschema.ClassTypeSchemaTest.B\" : {\n" +
+                "      \"type\" : \"record\",\n" +
+                "      \"name\" : \"B\",\n" +
+                "      \"namespace\" : \"ren.wenchao.jschema.ClassTypeSchemaTest\",\n" +
+                "      \"types\" : { },\n" +
+                "      \"fields\" : [ {\n" +
+                "        \"name\" : \"a\",\n" +
+                "        \"type\" : \"ren.wenchao.jschema.ClassTypeSchemaTest.A\"\n" +
+                "      }, {\n" +
+                "        \"name\" : \"i2\",\n" +
+                "        \"type\" : \"int\"\n" +
+                "      } ]\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"fields\" : [ {\n" +
+                "    \"name\" : \"a\",\n" +
+                "    \"type\" : \"ren.wenchao.jschema.ClassTypeSchemaTest.A\"\n" +
+                "  }, {\n" +
+                "    \"name\" : \"b\",\n" +
+                "    \"type\" : \"ren.wenchao.jschema.ClassTypeSchemaTest.B\"\n" +
+                "  }, {\n" +
+                "    \"name\" : \"i3\",\n" +
+                "    \"type\" : \"int\"\n" +
+                "  } ]\n" +
+                "}", bSchema);
     }
 }
