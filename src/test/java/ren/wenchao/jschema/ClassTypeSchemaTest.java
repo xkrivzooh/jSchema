@@ -29,15 +29,10 @@ public class ClassTypeSchemaTest {
                 "  \"type\" : \"record\",\n" +
                 "  \"name\" : \"A\",\n" +
                 "  \"namespace\" : \"ren.wenchao.jschema.ClassTypeSchemaTest\",\n" +
+                "  \"types\" : { },\n" +
                 "  \"fields\" : [ {\n" +
-                "    \"name\" : \"aInt\",\n" +
+                "    \"name\" : \"i1\",\n" +
                 "    \"type\" : \"int\"\n" +
-                "  }, {\n" +
-                "    \"name\" : \"aInteger\",\n" +
-                "    \"type\" : {\n" +
-                "      \"type\" : \"int\",\n" +
-                "      \"primitive-type\" : false\n" +
-                "    }\n" +
                 "  } ]\n" +
                 "}", schema);
     }
