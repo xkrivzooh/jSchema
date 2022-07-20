@@ -120,8 +120,15 @@ class RecordSchema extends NamedSchema {
         gen.writeStringField("type", isError ? "error" : "record");
         writeName(names, gen);
         names.space(name.getSpace()); // set default namespace
-        if (getDoc() != null)
+
+        if (getDoc() != null) {
             gen.writeStringField("doc", getDoc());
+        }
+
+        ///////todo types
+        gen.writeFieldName("types");
+        fillTypes(names, gen);
+        //////end types
 
         if (fields != null) {
             gen.writeFieldName("fields");
@@ -161,5 +168,22 @@ class RecordSchema extends NamedSchema {
             gen.writeEndObject();
         }
         gen.writeEndArray();
+    }
+
+    void fillTypes(Names names, JsonGenerator gen) throws IOException{
+        gen.writeStartObject();
+        if (fields != null) {
+            for (Field field : fields) {
+                TypeSchema fieldSchema = field.schema();
+                if (fieldSchema.getType() == SchemaType.RECORD) {
+                    RecordSchema recordSchema = (RecordSchema) fieldSchema;
+                    if (names.get(new NameWrapper(fieldSchema.getName(), fieldSchema.getNamespace())) == null) {
+                        gen.writeFieldName(fieldSchema.getFullName());
+                        recordSchema.toJson(names, gen);
+                    }
+                }
+            }
+        }
+        gen.writeEndObject();
     }
 }
