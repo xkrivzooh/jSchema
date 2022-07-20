@@ -49,9 +49,11 @@ class NameWrapper {
     }
 
     public void writeName(Names names, JsonGenerator gen) throws IOException {
-        if (name != null) gen.writeStringField("name", name);
+        if (name != null) {
+            gen.writeStringField("name", name);
+        }
         if (space != null) {
-            if (!space.equals(names.space())) gen.writeStringField("namespace", space);
+            gen.writeStringField("namespace", space);
         } else if (names.space() != null) { // null within non-null
             gen.writeStringField("namespace", "");
         }
