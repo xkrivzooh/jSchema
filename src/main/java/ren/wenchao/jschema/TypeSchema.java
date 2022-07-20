@@ -144,11 +144,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 return createSchema0(type, names);
             if (c.isArray()) { // array
                 Class component = c.getComponentType();
-                if (component == Byte.TYPE) { // byte array
-                    TypeSchema result = TypeSchema.create(SchemaType.BYTES);
-                    result.addProp(CLASS_PROP, c.getName());
-                    return result;
-                }
                 TypeSchema result = TypeSchema.createArray(createSchema(component, names));
                 result.addProp(CLASS_PROP, c.getName());
                 setElement(result, component);
