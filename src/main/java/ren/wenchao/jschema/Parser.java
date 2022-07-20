@@ -211,10 +211,13 @@ public class Parser {
                     throw new SchemaParseException("Array has no items type: " + schema);
                 result = new ArraySchema(parse(itemsNode, names));
             } else if (type.equals("map")) { // map
+                JsonNode keysNode = schema.get("keys");
+                if (keysNode == null)
+                    throw new SchemaParseException("Map has no keys type: " + schema);
                 JsonNode valuesNode = schema.get("values");
                 if (valuesNode == null)
                     throw new SchemaParseException("Map has no values type: " + schema);
-                result = new MapSchema(parse(valuesNode, names));
+                result = new MapSchema(parse(keysNode, names), parse(valuesNode, names));
             }
             //todo 不支持fixed
 //            else if (type.equals("fixed")) { // fixed
@@ -279,7 +282,9 @@ public class Parser {
         return out;
     }
 
-    /** Extracts text value associated to key from the container JsonNode. */
+    /**
+     * Extracts text value associated to key from the container JsonNode.
+     */
     private static String getOptionalText(JsonNode container, String key) {
         JsonNode jsonNode = container.get(key);
         return jsonNode != null ? jsonNode.textValue() : null;

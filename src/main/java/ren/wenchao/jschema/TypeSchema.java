@@ -102,7 +102,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
             if (Map.class.isAssignableFrom(raw)) { // Map
                 Class key = (Class) params[0];
                 if (isStringable(key)) { // Stringable key
-                    TypeSchema schema = TypeSchema.createMap(createSchema(params[1], names));
+                    TypeSchema schema = TypeSchema.createMap(createSchema(params[0], names), createSchema(params[1], names));
                     schema.addProp(KEY_CLASS_PROP, key.getName());
                     return schema;
                 } else if (key != String.class) {
@@ -311,7 +311,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 java.lang.reflect.Type value = params[1];
                 if (!(key instanceof Class && CharSequence.class.isAssignableFrom((Class) key)))
                     throw new SchemaRuntimeException("Map key class not CharSequence: " + key);
-                return TypeSchema.createMap(createSchema0(value, names));
+                return TypeSchema.createMap(createSchema0(key, names), createSchema0(value, names));
             } else {
                 return createSchema0(raw, names);
             }
@@ -701,6 +701,13 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     }
 
     /**
+     * If this is a map, returns its key type.
+     */
+    public TypeSchema getKeyType() {
+        throw new SchemaRuntimeException("Not a map: " + this);
+    }
+
+    /**
      * If this is a map, returns its value type.
      */
     public TypeSchema getValueType() {
@@ -733,15 +740,15 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     /**
      * Create a map schema.
      */
-    public static TypeSchema createMap(TypeSchema valueType) {
-        return new MapSchema(valueType);
+    public static TypeSchema createMap(TypeSchema keyType, TypeSchema valueType) {
+        return new MapSchema(keyType, valueType);
     }
 
     /*
      * Non-string map-keys need special handling and we convert it to an array of
      * records as: [{"key":{...}, "value":{...}}]
      */
-    //todo 这块后面需要页数处理
+    //todo 针对Map类型特殊处理
     private static TypeSchema createNonStringMapSchema(Type keyType, Type valueType, Map<String, TypeSchema> names) {
         TypeSchema keySchema = createSchema(keyType, names);
         TypeSchema valueSchema = createSchema(valueType, names);

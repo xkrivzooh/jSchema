@@ -6,11 +6,17 @@ import java.io.IOException;
 
 class MapSchema extends TypeSchema {
 
+    private final TypeSchema keyType;
     private final TypeSchema valueType;
 
-    MapSchema(TypeSchema valueType) {
+    MapSchema(TypeSchema keyType, TypeSchema valueType) {
         super(SchemaType.MAP);
+        this.keyType = keyType;
         this.valueType = valueType;
+    }
+
+    public TypeSchema getKeyType() {
+        return keyType;
     }
 
     @Override
@@ -35,6 +41,8 @@ class MapSchema extends TypeSchema {
     void toJson(Names names, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
         gen.writeStringField("type", "map");
+        gen.writeFieldName("keys");
+        keyType.toJson(names, gen);
         gen.writeFieldName("values");
         valueType.toJson(names, gen);
         writeProps(gen);
