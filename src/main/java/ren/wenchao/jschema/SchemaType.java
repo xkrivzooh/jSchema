@@ -10,7 +10,6 @@ public enum SchemaType {
 
     //collection
     ARRAY, MAP, LIST, SET,
-
     //key word
     VOID, CLASS, ENUM, INTERFACE
     ;

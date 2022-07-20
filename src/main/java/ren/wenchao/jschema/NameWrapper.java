@@ -60,7 +60,7 @@ class NameWrapper {
     }
 
     public String getQualified(String defaultSpace) {
-        return (space == null || space.equals(defaultSpace)) ? name : full;
+        return (space == null) ? name : full;
     }
 
     private static String validateName(String name) {
