@@ -125,10 +125,8 @@ class RecordSchema extends NamedSchema {
             gen.writeStringField("doc", getDoc());
         }
 
-        ///////todo types
         gen.writeFieldName("types");
         fillTypes(names, gen);
-        //////end types
 
         if (fields != null) {
             gen.writeFieldName("fields");

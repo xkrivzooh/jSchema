@@ -23,6 +23,21 @@ public class ClassTypeSchemaTest {
     }
 
     @Test
+    public void test0() {
+        System.out.println(TypeSchema.getSchema(A.class).toString(true));
+        Assert.assertEquals("{\n" +
+                "  \"type\" : \"record\",\n" +
+                "  \"name\" : \"A\",\n" +
+                "  \"namespace\" : \"ren.wenchao.jschema.ClassTypeSchemaTest\",\n" +
+                "  \"types\" : { },\n" +
+                "  \"fields\" : [ {\n" +
+                "    \"name\" : \"i1\",\n" +
+                "    \"type\" : \"int\"\n" +
+                "  } ]\n" +
+                "}", TypeSchema.getSchema(A.class).toString(true));
+    }
+
+    @Test
     public void test1() {
         String schema = TypeSchema.getSchema(A.class).toString(true);
         assertEquals("{\n" +

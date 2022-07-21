@@ -256,12 +256,7 @@ public class Parser {
                         result.addAlias(alias);
             }
             return result;
-        } else if (schema.isArray()) { // union
-            LockableArrayList<TypeSchema> types = new LockableArrayList<>(schema.size());
-            for (JsonNode typeNode : schema)
-                types.add(parse(typeNode, names));
-            return new UnionSchema(types);
-        } else {
+        }  else {
             throw new SchemaParseException("Schema not yet supported: " + schema);
         }
     }

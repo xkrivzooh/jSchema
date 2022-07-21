@@ -1,25 +1,19 @@
 package ren.wenchao.jschema;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.TokenBuffer;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 
 class JacksonUtils {
@@ -101,9 +95,6 @@ class JacksonUtils {
     }
 
     public static Object toObject(JsonNode jsonNode, TypeSchema schema) {
-        if (schema != null && schema.getType().equals(SchemaType.UNION)) {
-            return toObject(jsonNode, schema.getTypes().get(0));
-        }
         if (jsonNode == null) {
             return null;
         } else if (jsonNode.isNull()) {

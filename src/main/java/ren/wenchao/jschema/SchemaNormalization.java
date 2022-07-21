@@ -93,17 +93,6 @@ class SchemaNormalization {
     default: // boolean, bytes, double, float, int, long, null, string
       return o.append('"').append(st.getName()).append('"');
 
-    case UNION:
-      o.append('[');
-      for (TypeSchema b : s.getTypes()) {
-        if (!firstTime)
-          o.append(',');
-        else
-          firstTime = false;
-        build(env, b, o);
-      }
-      return o.append(']');
-
     case ARRAY:
     case MAP:
       o.append("{\"type\":\"").append(st.getName()).append("\"");

@@ -7,9 +7,13 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         PrimitiveTypeSchemaTest.class,
         ClassTypeSchemaTest.class,
-        CollectionTypeSchemaTest.class,
+        ArraySchemaTest.class,
         RecordSchemaTest.class,
-        FieldSchemaTest.class
+        FieldSchemaTest.class,
+        MapSchemaTest.class,
+        ListSchemaTest.class,
+        SetSchemaTest.class,
+        NullableTest.class
 })
 public class AllTest {
 }
