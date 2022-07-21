@@ -9,7 +9,8 @@ import org.junit.runners.Suite;
         ClassTypeSchemaTest.class,
         CollectionTypeSchemaTest.class,
         RecordSchemaTest.class,
-        FieldSchemaTest.class
+        FieldSchemaTest.class,
+        MapSchemaTest.class
 })
 public class AllTest {
 }
