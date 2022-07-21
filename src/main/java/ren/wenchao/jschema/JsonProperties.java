@@ -17,102 +17,17 @@
  */
 package ren.wenchao.jschema;
 
-import java.util.AbstractSet;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
-
-import java.io.IOException;
-
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
-/**
- * Base class for objects that have JSON-valued properties. Avro and JSON values
- * are represented in Java using the following mapping:
- *
- * <table>
- * <th>
- * <td>Avro type</td>
- * <td>JSON type</td>
- * <td>Java type</td></th>
- * <tr>
- * <td><code>null</code></td>
- * <td><code>null</code></td>
- * <td>{@link #NULL_VALUE}</td>
- * </tr>
- * <tr>
- * <td><code>boolean</code></td>
- * <td>Boolean</td>
- * <td><code>boolean</code></td>
- * </tr>
- * <tr>
- * <td><code>int</code></td>
- * <td>Number</td>
- * <td><code>int</code></td>
- * </tr>
- * <tr>
- * <td><code>long</code></td>
- * <td>Number</td>
- * <td><code>long</code></td>
- * </tr>
- * <tr>
- * <td><code>float</code></td>
- * <td>Number</td>
- * <td><code>float</code></td>
- * </tr>
- * <tr>
- * <td><code>double</code></td>
- * <td>Number</td>
- * <td><code>double</code></td>
- * </tr>
- * <tr>
- * <td><code>bytes</code></td>
- * <td>String</td>
- * <td><code>byte[]</code></td>
- * </tr>
- * <tr>
- * <td><code>string</code></td>
- * <td>String</td>
- * <td>{@link java.lang.String}</td>
- * </tr>
- * <tr>
- * <td><code>record</code></td>
- * <td>Object</td>
- * <td>{@link java.util.Map}</td>
- * </tr>
- * <tr>
- * <td><code>enum</code></td>
- * <td>String</td>
- * <td>{@link java.lang.String}</td>
- * </tr>
- * <tr>
- * <td><code>array</code></td>
- * <td>Array</td>
- * <td>{@link java.util.Collection}</td>
- * </tr>
- * <tr>
- * <td><code>map</code></td>
- * <td>Object</td>
- * <td>{@link java.util.Map}</td>
- * </tr>
- * <tr>
- * <td><code>fixed</code></td>
- * <td>String</td>
- * <td><code>byte[]</code></td>
- * </tr>
- * </table>
- *
- */
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentMap;
+
 abstract class JsonProperties {
 
   static {

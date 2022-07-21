@@ -179,6 +179,12 @@ class RecordSchema extends NamedSchema {
                         gen.writeFieldName(fieldSchema.getFullName());
                         recordSchema.toJson(names, gen);
                     }
+                } else if (fieldSchema.getType() == SchemaType.ENUM) {
+                    EnumSchema enumSchema = (EnumSchema) fieldSchema;
+                    if (names.get(new NameWrapper(fieldSchema.getName(), fieldSchema.getNamespace())) == null) {
+                        gen.writeFieldName(fieldSchema.getFullName());
+                        enumSchema.toJson(names, gen);
+                    }
                 }
             }
         }

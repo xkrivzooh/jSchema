@@ -6,8 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Sets the avrodoc for this java field. When reading into this class, a
- * reflectdatumreader looks for a schema field with the avrodoc.
+ * Sets the doc for this java field.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD })

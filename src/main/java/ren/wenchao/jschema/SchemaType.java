@@ -3,16 +3,13 @@ package ren.wenchao.jschema;
 import java.util.Locale;
 
 public enum SchemaType {
-    //todo need to remove
-    RECORD, FIXED, BYTES, CHARACTER, NULL,
     // primitive types
     BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, STRING,
 
     //collection
     ARRAY, MAP, LIST, SET,
     //key word
-    VOID, CLASS, ENUM, INTERFACE
-    ;
+    RECORD, BYTES, NULL, VOID, ENUM;
 
     private final String name;
 

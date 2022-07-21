@@ -20,8 +20,6 @@ class FieldUtils {
             case STRING:
             case BYTES:
             case ENUM:
-            case FIXED:
-                return defaultValue.isTextual();
             case INT:
                 return defaultValue.isIntegralNumber() && defaultValue.canConvertToInt();
             case LONG:
