@@ -269,7 +269,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
      * Create the schema for a Java type.
      */
     @SuppressWarnings(value = "unchecked")
-    protected static TypeSchema createSchema0(java.lang.reflect.Type type, Map<String, TypeSchema> names) {
+    private static TypeSchema createSchema0(java.lang.reflect.Type type, Map<String, TypeSchema> names) {
         if (type instanceof Class && CharSequence.class.isAssignableFrom((Class) type))
             return TypeSchema.create(SchemaType.STRING);
         else if (type == ByteBuffer.class)
@@ -780,7 +780,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
      * @param fieldSchema Schema of the field
      * @return The default value
      */
-    protected static Object createSchemaDefaultValue(Type type, java.lang.reflect.Field field, TypeSchema fieldSchema) {
+    private static Object createSchemaDefaultValue(Type type, java.lang.reflect.Field field, TypeSchema fieldSchema) {
         Object defaultValue;
 //        if (defaultGenerated) {
 //            defaultValue = getOrCreateDefaultValue(type, field);
