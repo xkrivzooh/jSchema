@@ -1,13 +1,9 @@
 package ren.wenchao.jschema;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
- * Declares that a Java type should have a specified Avro schema, overriding the
+ * Declares that a Java type should have a specified  schema, overriding the
  * normally inferred schema. May be used for classes, parameters, fields and
  * method return types.
  * <p>
@@ -16,7 +12,7 @@ import java.lang.annotation.Target;
  * elements may be null might use the annotation
  * 
  * <pre>
- * &#64;AvroSchema("{\"type\":\"array\",\"items\":[\"null\",\"int\"]}")
+ * &#64;Schema("{\"type\":\"array\",\"items\":[\"null\",\"int\"]}")
  * </pre>
  * 
  * since the {@link Nullable} annotation could not be used here.

@@ -186,12 +186,12 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                     for (Enum constant : constants)
                         symbols.add(constant.name());
                     schema = TypeSchema.createEnum(name, doc, space, symbols);
-                    consumeAvroAliasAnnotation(c, schema);
+                    consumeAliasAnnotation(c, schema);
                 } else { // record
                     List<Field> fields = new ArrayList<>();
                     boolean error = Throwable.class.isAssignableFrom(c);
                     schema = TypeSchema.createRecord(name, doc, space, error);
-                    consumeAvroAliasAnnotation(c, schema);
+                    consumeAliasAnnotation(c, schema);
                     names.put(c.getName(), schema);
                     for (java.lang.reflect.Field field : getCachedFields(c))
                         if ((field.getModifiers() & (Modifier.TRANSIENT | Modifier.STATIC)) == 0 && !field.isAnnotationPresent(Ignore.class)) {
@@ -613,7 +613,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     }
 
 
-    private static void consumeAvroAliasAnnotation(Class<?> c, TypeSchema schema) {
+    private static void consumeAliasAnnotation(Class<?> c, TypeSchema schema) {
         Alias[] aliases = c.getAnnotationsByType(Alias.class);
         for (Alias alias : aliases) {
             String space = alias.space();
