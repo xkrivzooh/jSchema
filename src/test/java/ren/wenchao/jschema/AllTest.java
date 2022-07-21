@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
         ListSchemaTest.class,
         SetSchemaTest.class,
         NullableTest.class,
+        EnumSchemaTest.class
 })
 public class AllTest {
 }
