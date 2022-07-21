@@ -27,13 +27,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     public static final String NULL_ABLE_PROP = "nullable";
     public static final String CLASS_PROP = "java-class";
     public static final String KEY_CLASS_PROP = "java-key-class";
-    public static final String ELEMENT_PROP = "java-element-class";
-
-    static final String NS_MAP_KEY = "key";  // name of key field
-    static final String NS_MAP_VALUE = "value"; // name of value field
-
-    static final String NS_MAP_ARRAY_RECORD = // record name prefix
-            "org.apache.avro.reflect.Pair";
 
     private static final String STRING_OUTER_PARENT_REFERENCE = "this$0";
     static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases"));
@@ -194,16 +187,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                         symbols.add(constant.name());
                     schema = TypeSchema.createEnum(name, doc, space, symbols);
                     consumeAvroAliasAnnotation(c, schema);
-                }
-                //todo 暂不支持GenericFixed和IndexedRecord
-//                else if (GenericFixed.class.isAssignableFrom(c)) { // fixed
-//                    int size = c.getAnnotation(FixedSize.class).value();
-//                    schema = TypeSchema.createFixed(name, doc, space, size);
-//                    consumeAvroAliasAnnotation(c, schema);
-//                } else if (IndexedRecord.class.isAssignableFrom(c)) { // specific
-//                    return super.createSchema(type, names);
-//                }
-                else { // record
+                } else { // record
                     List<Field> fields = new ArrayList<>();
                     boolean error = Throwable.class.isAssignableFrom(c);
                     schema = TypeSchema.createRecord(name, doc, space, error);
@@ -233,7 +217,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                             }
 
                             if (field.isAnnotationPresent(Nullable.class)) {
-                                 recordField.addProp(NULL_ABLE_PROP, true);
+                                recordField.addProp(NULL_ABLE_PROP, true);
                             }
 
                             for (Field f : fields) {
@@ -426,21 +410,21 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     }
 
     /**
-     * If this is a record, enum or fixed, add an alias.
+     * If this is a record, enum, add an alias.
      */
     public void addAlias(String alias) {
         throw new SchemaRuntimeException("Not a named type: " + this);
     }
 
     /**
-     * If this is a record, enum or fixed, add an alias.
+     * If this is a record, enum, add an alias.
      */
     public void addAlias(String alias, String space) {
         throw new SchemaRuntimeException("Not a named type: " + this);
     }
 
     /**
-     * If this is a record, enum or fixed, return its aliases, if any.
+     * If this is a record, enum, return its aliases, if any.
      */
     public Set<String> getAliases() {
         throw new SchemaRuntimeException("Not a named type: " + this);
@@ -471,7 +455,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     }
 
     /**
-     * If this is a record, enum or fixed, returns its namespace, if any.
+     * If this is a record, enum, returns its namespace, if any.
      */
     public String getNamespace() {
         throw new SchemaRuntimeException("Not a named type: " + this);
@@ -507,7 +491,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
 
 
     /**
-     * If this is a record, enum, or fixed, returns its docstring, if available.
+     * If this is a record, enum, returns its docstring, if available.
      * Otherwise, returns null.
      */
     public String getDoc() {
@@ -515,7 +499,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     }
 
     /**
-     * If this is a record, enum or fixed, returns its namespace-qualified name,
+     * If this is a record, enum, returns its namespace-qualified name,
      * otherwise returns the name of the primitive type.
      */
     public String getFullName() {

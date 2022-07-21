@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public enum SchemaType {
     //todo need to remove
-    RECORD, FIXED, BYTES, NULL,
+    RECORD, BYTES, NULL,
     // primitive types
     BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, STRING,
 

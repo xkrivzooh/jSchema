@@ -134,7 +134,7 @@ class JacksonUtils {
         } else if (jsonNode.isTextual()) {
             if (schema == null || schema.getType().equals(SchemaType.STRING) || schema.getType().equals(SchemaType.ENUM)) {
                 return jsonNode.asText();
-            } else if (schema.getType().equals(SchemaType.BYTES) || schema.getType().equals(SchemaType.FIXED)) {
+            } else if (schema.getType().equals(SchemaType.BYTES)) {
                 return jsonNode.textValue().getBytes(StandardCharsets.ISO_8859_1);
             }
         } else if (jsonNode.isArray()) {

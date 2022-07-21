@@ -103,7 +103,6 @@ class SchemaNormalization {
       return o.append("}");
 
     case ENUM:
-    case FIXED:
     case RECORD:
       String name = s.getFullName();
       if (env.get(name) != null)
