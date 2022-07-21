@@ -11,7 +11,8 @@ import org.junit.runners.Suite;
         RecordSchemaTest.class,
         FieldSchemaTest.class,
         MapSchemaTest.class,
-        ListSchema.class
+        ListSchema.class,
+        SetSchema.class
 })
 public class AllTest {
 }

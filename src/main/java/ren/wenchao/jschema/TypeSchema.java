@@ -119,6 +119,12 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                     schema.addProp(CLASS_PROP, raw.getName());
                     return schema;
                 }
+
+                if (Set.class.isAssignableFrom(raw)) {
+                    TypeSchema schema = TypeSchema.createSet(createSchema(params[0], names));
+                    schema.addProp(CLASS_PROP, raw.getName());
+                    return schema;
+                }
                 TypeSchema schema = TypeSchema.createArray(createSchema(params[0], names));
                 schema.addProp(CLASS_PROP, raw.getName());
                 return schema;
@@ -749,6 +755,13 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
      */
     public static TypeSchema createList(TypeSchema elementType) {
         return new ListSchema(elementType);
+    }
+
+    /**
+     * Create an set schema
+     */
+    public static TypeSchema createSet(TypeSchema elementType) {
+        return new SetSchema(elementType);
     }
 
     /**
