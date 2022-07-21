@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -112,7 +111,14 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 schema.addProp(CLASS_PROP, raw.getName());
                 return schema;
             } else if (Collection.class.isAssignableFrom(raw)) { // Collection
-                if (params.length != 1) throw new SchemaRuntimeException("No array type specified.");
+                if (params.length != 1) {
+                    throw new SchemaRuntimeException("No array type specified.");
+                }
+                if (List.class.isAssignableFrom(raw)) {
+                    TypeSchema schema = TypeSchema.createList(createSchema(params[0], names));
+                    schema.addProp(CLASS_PROP, raw.getName());
+                    return schema;
+                }
                 TypeSchema schema = TypeSchema.createArray(createSchema(params[0], names));
                 schema.addProp(CLASS_PROP, raw.getName());
                 return schema;
@@ -736,6 +742,13 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
      */
     public static TypeSchema createArray(TypeSchema elementType) {
         return new ArraySchema(elementType);
+    }
+
+    /**
+     * Create an list schema
+     */
+    public static TypeSchema createList(TypeSchema elementType) {
+        return new ListSchema(elementType);
     }
 
     /**

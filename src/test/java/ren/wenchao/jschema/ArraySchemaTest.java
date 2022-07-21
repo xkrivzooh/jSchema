@@ -1,15 +1,10 @@
 package ren.wenchao.jschema;
 
-import org.junit.Assert;
 import org.junit.Test;
-
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class CollectionTypeSchemaTest {
+public class ArraySchemaTest {
 
     @Test
     public void test_array_schema_create() {
