@@ -13,7 +13,7 @@ import org.junit.runners.Suite;
         MapSchemaTest.class,
         ListSchemaTest.class,
         SetSchemaTest.class,
-        NullableTest.class
+        NullableTest.class,
 })
 public class AllTest {
 }

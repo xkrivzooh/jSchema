@@ -23,10 +23,10 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
 
     int hashCode = NO_HASHCODE;
     protected static final int NO_HASHCODE = Integer.MIN_VALUE;
-    public static final String PRIMITIVE_TYPE = "primitive-type";
-    public static final String NULL_ABLE_PROP = "nullable";
-    public static final String CLASS_PROP = "java-class";
-    public static final String KEY_CLASS_PROP = "java-key-class";
+    static final String PRIMITIVE_TYPE = "primitive-type";
+    static final String NULL_ABLE_PROP = "nullable";
+    static final String CLASS_PROP = "java-class";
+    static final String KEY_CLASS_PROP = "java-key-class";
 
     private static final String STRING_OUTER_PARENT_REFERENCE = "this$0";
     static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases"));
@@ -598,10 +598,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
         if (field.isAnnotationPresent(Stringable.class)) { // Stringable
             schema = TypeSchema.create(SchemaType.STRING);
         }
-        return schema;
-    }
-
-    public static TypeSchema makeNullable(TypeSchema schema) {
         return schema;
     }
 
