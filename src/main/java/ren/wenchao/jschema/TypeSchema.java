@@ -23,10 +23,8 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
 
     int hashCode = NO_HASHCODE;
     protected static final int NO_HASHCODE = Integer.MIN_VALUE;
-
-    private static final TypeSchema THROWABLE_MESSAGE = makeNullable(TypeSchema.create(SchemaType.STRING));
-
     public static final String PRIMITIVE_TYPE = "primitive-type";
+    public static final String NULL_ABLE_PROP = "nullable";
     public static final String CLASS_PROP = "java-class";
     public static final String KEY_CLASS_PROP = "java-key-class";
     public static final String ELEMENT_PROP = "java-element-class";
@@ -91,9 +89,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
             if (component == Byte.TYPE) {// byte array
                 return TypeSchema.create(SchemaType.BYTES);
             }
-            TypeSchema result = TypeSchema.createArray(createSchema(component, names));
-            setElement(result, component);
-            return result;
+            return TypeSchema.createArray(createSchema(component, names));
         } else if (type instanceof ParameterizedType) {
             ParameterizedType ptype = (ParameterizedType) type;
             Class raw = (Class) ptype.getRawType();
@@ -159,7 +155,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 Class component = c.getComponentType();
                 TypeSchema result = TypeSchema.createArray(createSchema(component, names));
                 result.addProp(CLASS_PROP, c.getName());
-                setElement(result, component);
                 return result;
             }
             Schema explicit = c.getAnnotation(Schema.class);
@@ -185,12 +180,10 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 String doc = (annotatedDoc != null) ? annotatedDoc.value() : null;
                 String name = c.getSimpleName();
                 String space = c.getPackage() == null ? "" : c.getPackage().getName();
-                if (c.getEnclosingClass() != null) // nested class
+                if (c.getEnclosingClass() != null) { // nested class
                     space = c.getEnclosingClass().getName();
-                Union union = c.getAnnotation(Union.class);
-                if (union != null) { // union annotated
-                    return getAnnotatedUnion(union, names);
-                } else if (isStringable(c)) { // Stringable
+                }
+                if (isStringable(c)) { // Stringable
                     TypeSchema result = TypeSchema.create(SchemaType.STRING);
                     result.addProp(CLASS_PROP, c.getName());
                     return result;
@@ -238,6 +231,11 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                                 }
                                 recordField.addProp(meta.key(), meta.value());
                             }
+
+                            if (field.isAnnotationPresent(Nullable.class)) {
+                                 recordField.addProp(NULL_ABLE_PROP, true);
+                            }
+
                             for (Field f : fields) {
                                 if (f.name().equals(fieldName))
                                     throw new SchemaRuntimeException("double field entry: " + fieldName);
@@ -247,8 +245,9 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
 
                             fields.add(recordField);
                         }
-                    if (error) // add Throwable message
-                        fields.add(new Field("detailMessage", THROWABLE_MESSAGE, null, null));
+                    if (error) {// add Throwable message
+                        fields.add(new Field("detailMessage", TypeSchema.create(SchemaType.STRING), null, null));
+                    }
                     schema.setFields(fields);
                     Meta[] metadata = c.getAnnotationsByType(Meta.class);
                     for (Meta meta : metadata) {
@@ -426,19 +425,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
         return c.isAnnotationPresent(Stringable.class) || stringableClasses.contains(c);
     }
 
-    // if array element type is a class with a union annotation, note it
-    // this is required because we cannot set a property on the union itself
-    private static void setElement(TypeSchema schema, Type element) {
-        if (!(element instanceof Class)) {
-            return;
-        }
-        Class<?> c = (Class<?>) element;
-        Union union = c.getAnnotation(Union.class);
-        if (union != null) {// element is annotated union
-            schema.addProp(ELEMENT_PROP, c.getName());
-        }
-    }
-
     /**
      * If this is a record, enum or fixed, add an alias.
      */
@@ -580,13 +566,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
     }
 
     /**
-     * Create a union schema.
-     */
-    public static TypeSchema createUnion(List<TypeSchema> types) {
-        return new UnionSchema(new LockableArrayList<>(types));
-    }
-
-    /**
      * Create an enum schema.
      */
     public static TypeSchema createEnum(String name, String doc, String namespace, List<String> values) {
@@ -631,39 +610,15 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
         if (explicit != null) // explicit schema
             return new Parser().parse(explicit.value());
 
-        Union union = field.getAnnotation(Union.class);
-        if (union != null)
-            return getAnnotatedUnion(union, names);
-
         TypeSchema schema = createSchema(field.getGenericType(), names);
         if (field.isAnnotationPresent(Stringable.class)) { // Stringable
             schema = TypeSchema.create(SchemaType.STRING);
         }
-        if (field.isAnnotationPresent(Nullable.class)) // nullable
-            schema = makeNullable(schema);
         return schema;
     }
 
-    /**
-     * Create and return a union of the null schema and the provided schema.
-     */
     public static TypeSchema makeNullable(TypeSchema schema) {
-        if (schema.getType() == SchemaType.UNION) {
-            // check to see if the union already contains NULL
-            for (TypeSchema subType : schema.getTypes()) {
-                if (subType.getType() == SchemaType.NULL) {
-                    return schema;
-                }
-            }
-            // add null as the first type in a new union
-            List<TypeSchema> withNull = new ArrayList<>();
-            withNull.add(TypeSchema.create(SchemaType.NULL));
-            withNull.addAll(schema.getTypes());
-            return TypeSchema.createUnion(withNull);
-        } else {
-            // create a union with null
-            return TypeSchema.createUnion(Arrays.asList(TypeSchema.create(SchemaType.NULL), schema));
-        }
+        return schema;
     }
 
     private static void consumeFieldAlias(java.lang.reflect.Field field, Field recordField) {
@@ -677,14 +632,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
         }
     }
 
-
-    // construct a schema from a union annotation
-    private static TypeSchema getAnnotatedUnion(Union union, Map<String, TypeSchema> names) {
-        List<TypeSchema> branches = new ArrayList<>();
-        for (Class branch : union.value())
-            branches.add(createSchema(branch, names));
-        return TypeSchema.createUnion(branches);
-    }
 
     private static void consumeAvroAliasAnnotation(Class<?> c, TypeSchema schema) {
         Alias[] aliases = c.getAnnotationsByType(Alias.class);
@@ -792,13 +739,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
 
         Default defaultAnnotation = field.getAnnotation(Default.class);
         defaultValue = (defaultAnnotation == null) ? null : JacksonUtils.parseJsonToObject(defaultAnnotation.value());
-
-        if (defaultValue == null && fieldSchema.getType() == SchemaType.UNION) {
-            TypeSchema defaultType = fieldSchema.getTypes().get(0);
-            if (defaultType.getType() == SchemaType.NULL) {
-                defaultValue = JsonProperties.NULL_VALUE;
-            }
-        }
         return defaultValue;
     }
 

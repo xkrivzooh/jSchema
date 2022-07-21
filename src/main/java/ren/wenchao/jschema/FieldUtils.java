@@ -43,8 +43,6 @@ class FieldUtils {
                 for (JsonNode value : defaultValue)
                     if (!isValidDefault(schema.getValueType(), value)) return false;
                 return true;
-            case UNION: // union default: first branch
-                return isValidDefault(schema.getTypes().get(0), defaultValue);
             case RECORD:
                 if (!defaultValue.isObject()) return false;
                 for (Field field : schema.getFields())
