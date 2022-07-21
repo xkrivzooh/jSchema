@@ -3,15 +3,13 @@ package ren.wenchao.jschema;
 import java.util.Locale;
 
 public enum SchemaType {
-    RECORD, BYTES, NULL,
     // primitive types
     BYTE, SHORT, INT, LONG, FLOAT, DOUBLE, BOOLEAN, CHAR, STRING,
 
     //collection
     ARRAY, MAP, LIST, SET,
     //key word
-    VOID, ENUM
-    ;
+    RECORD, BYTES, NULL, VOID, ENUM;
 
     private final String name;
 
