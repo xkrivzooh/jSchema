@@ -24,9 +24,8 @@ public enum SchemaType {
 
     private final String name;
 
-    private final Map<String, String> nameMapping = new HashMap<>();
-
     private SchemaType() {
+        Map<String, String> nameMapping = new HashMap<>();
         nameMapping.put("BYTE", "byte");
         nameMapping.put("BYTE_WRAPPER", "Byte");
         nameMapping.put("BYTES", "bytes");
