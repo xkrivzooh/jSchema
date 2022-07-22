@@ -19,6 +19,7 @@ class Primitives {
         PRIMITIVES.put("Byte", SchemaType.BYTE_WRAPPER);
         PRIMITIVES.put("int", SchemaType.INT);
         PRIMITIVES.put("short", SchemaType.SHORT);
+        PRIMITIVES.put("Short", SchemaType.SHORT_WRAPPER);
         PRIMITIVES.put("long", SchemaType.LONG);
         PRIMITIVES.put("float", SchemaType.FLOAT);
         PRIMITIVES.put("double", SchemaType.DOUBLE);

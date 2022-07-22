@@ -126,12 +126,11 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
             }
             return TypeSchema.create(SchemaType.BYTE_WRAPPER);
         } else if ((type == Short.class) || (type == Short.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.SHORT);
             boolean primitive = ((Class<?>) type).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.SHORT);
             }
-            return result;
+            return TypeSchema.create(SchemaType.SHORT_WRAPPER);
         } else if ((type == Character.class) || (type == Character.TYPE)) {
             TypeSchema result = TypeSchema.create(SchemaType.CHAR);
             boolean primitive = ((Class<?>) type).isPrimitive();
@@ -344,6 +343,8 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 return new BytesSchema();
             case SHORT:
                 return new ShortSchema();
+            case SHORT_WRAPPER:
+                return new ShortWrapperSchema();
             case INT:
                 return new IntSchema();
             case LONG:

@@ -29,7 +29,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Short_schema_create() {
         String schema = TypeSchema.getSchemaString(Short.class);
-        assertEquals("{\"type\":\"short\",\"primitive-type\":false}", schema);
+        assertEquals("\"Short\"", schema);
     }
 
     @Test
