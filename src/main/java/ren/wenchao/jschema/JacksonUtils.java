@@ -106,7 +106,7 @@ class JacksonUtils {
                 return jsonNode.asInt();
             } else if (schema.getType().equals(SchemaType.LONG) || schema.getType().equals(SchemaType.LONG_WRAPPER)) {
                 return jsonNode.asLong();
-            } else if (schema.getType().equals(SchemaType.FLOAT)) {
+            } else if (schema.getType().equals(SchemaType.FLOAT) || schema.getType().equals(SchemaType.FLOAT_WRAPPER)) {
                 return (float) jsonNode.asDouble();
             } else if (schema.getType().equals(SchemaType.DOUBLE)) {
                 return jsonNode.asDouble();
@@ -120,7 +120,7 @@ class JacksonUtils {
                 } else {
                     return jsonNode.asLong();
                 }
-            } else if (schema.getType().equals(SchemaType.FLOAT)) {
+            } else if (schema.getType().equals(SchemaType.FLOAT) || schema.getType().equals(SchemaType.FLOAT_WRAPPER)) {
                 return (float) jsonNode.asDouble();
             } else if (schema.getType().equals(SchemaType.DOUBLE)) {
                 return jsonNode.asDouble();
@@ -128,7 +128,7 @@ class JacksonUtils {
         } else if (jsonNode.isDouble() || jsonNode.isFloat()) {
             if (schema == null || schema.getType().equals(SchemaType.DOUBLE)) {
                 return jsonNode.asDouble();
-            } else if (schema.getType().equals(SchemaType.FLOAT)) {
+            } else if (schema.getType().equals(SchemaType.FLOAT) || schema.getType().equals(SchemaType.FLOAT_WRAPPER)) {
                 return (float) jsonNode.asDouble();
             }
         } else if (jsonNode.isTextual()) {

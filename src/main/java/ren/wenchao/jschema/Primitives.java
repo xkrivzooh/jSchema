@@ -24,6 +24,7 @@ class Primitives {
         PRIMITIVES.put("long", SchemaType.LONG);
         PRIMITIVES.put("Long", SchemaType.LONG_WRAPPER);
         PRIMITIVES.put("float", SchemaType.FLOAT);
+        PRIMITIVES.put("Float", SchemaType.FLOAT_WRAPPER);
         PRIMITIVES.put("double", SchemaType.DOUBLE);
         PRIMITIVES.put("boolean", SchemaType.BOOLEAN);
         PRIMITIVES.put("null", SchemaType.NULL);

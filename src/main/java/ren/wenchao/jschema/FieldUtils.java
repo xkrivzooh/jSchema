@@ -29,6 +29,7 @@ class FieldUtils {
             case LONG_WRAPPER:
                 return (defaultValue.isIntegralNumber() && defaultValue.canConvertToLong()) || defaultValue.isNull();
             case FLOAT:
+            case FLOAT_WRAPPER:
             case DOUBLE:
                 return defaultValue.isNumber();
             case BOOLEAN:

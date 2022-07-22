@@ -14,7 +14,7 @@ public class ArraySchemaTest {
         assertEquals("{\"type\":\"array\",\"items\":\"short\",\"java-class\":\"[S\"}", TypeSchema.getSchemaString(short[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"Short\",\"java-class\":\"[Ljava.lang.Short;\"}", TypeSchema.getSchemaString(Short[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"float\",\"java-class\":\"[F\"}", TypeSchema.getSchemaString(float[].class));
-        assertEquals("{\"type\":\"array\",\"items\":{\"type\":\"float\",\"primitive-type\":false},\"java-class\":\"[Ljava.lang.Float;\"}", TypeSchema.getSchemaString(Float[].class));
+        assertEquals("{\"type\":\"array\",\"items\":\"Float\",\"java-class\":\"[Ljava.lang.Float;\"}", TypeSchema.getSchemaString(Float[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"double\",\"java-class\":\"[D\"}", TypeSchema.getSchemaString(double[].class));
         assertEquals("{\"type\":\"array\",\"items\":{\"type\":\"double\",\"primitive-type\":false},\"java-class\":\"[Ljava.lang.Double;\"}", TypeSchema.getSchemaString(Double[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"char\",\"java-class\":\"[C\"}", TypeSchema.getSchemaString(char[].class));

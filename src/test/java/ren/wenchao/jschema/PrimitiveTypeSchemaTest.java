@@ -101,7 +101,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Float_schema_create() {
         String schema = TypeSchema.getSchemaString(Float.class);
-        assertEquals("{\"type\":\"float\",\"primitive-type\":false}", schema);
+        assertEquals("\"Float\"", schema);
     }
 
 
