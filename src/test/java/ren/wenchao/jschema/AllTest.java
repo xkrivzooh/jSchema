@@ -22,7 +22,9 @@ import org.junit.runners.Suite;
         MetaTest.class,
         NameTest.class,
         StringableTest.class,
-        PrimitiveTypeParserTest.class
+        PrimitiveTypeParserTest.class,
+        SchemaParserTest.class,
+        TestJacksonUtils.class
 })
 public class AllTest {
 }
