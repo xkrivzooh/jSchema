@@ -19,7 +19,7 @@ public class StringableTest extends BaseTest{
     @Test
     public void test1() {
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"string\",\n" +
+                "  \"type\" : \"String\",\n" +
                 "  \"java-class\" : \"ren.wenchao.jschema.StringableTest$A\"\n" +
                 "}", getPrettySchemaString(A.class));
     }
@@ -62,53 +62,53 @@ public class StringableTest extends BaseTest{
                 "  },\n" +
                 "  \"fields\" : [ {\n" +
                 "    \"name\" : \"bigDecimal\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"bigDecimal1\",\n" +
                 "    \"type\" : {\n" +
-                "      \"type\" : \"string\",\n" +
+                "      \"type\" : \"String\",\n" +
                 "      \"java-class\" : \"java.math.BigDecimal\"\n" +
                 "    }\n" +
                 "  }, {\n" +
                 "    \"name\" : \"bigInteger\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"bigInteger1\",\n" +
                 "    \"type\" : {\n" +
-                "      \"type\" : \"string\",\n" +
+                "      \"type\" : \"String\",\n" +
                 "      \"java-class\" : \"java.math.BigInteger\"\n" +
                 "    }\n" +
                 "  }, {\n" +
                 "    \"name\" : \"file\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"file1\",\n" +
                 "    \"type\" : {\n" +
-                "      \"type\" : \"string\",\n" +
+                "      \"type\" : \"String\",\n" +
                 "      \"java-class\" : \"java.io.File\"\n" +
                 "    }\n" +
                 "  }, {\n" +
                 "    \"name\" : \"object\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"object1\",\n" +
                 "    \"type\" : \"java.lang.Object\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"uri\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"uri1\",\n" +
                 "    \"type\" : {\n" +
-                "      \"type\" : \"string\",\n" +
+                "      \"type\" : \"String\",\n" +
                 "      \"java-class\" : \"java.net.URI\"\n" +
                 "    }\n" +
                 "  }, {\n" +
                 "    \"name\" : \"url\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"url1\",\n" +
                 "    \"type\" : {\n" +
-                "      \"type\" : \"string\",\n" +
+                "      \"type\" : \"String\",\n" +
                 "      \"java-class\" : \"java.net.URL\"\n" +
                 "    }\n" +
                 "  } ]\n" +

@@ -38,10 +38,10 @@ public class NullableTest {
                 "    \"nullable\" : true\n" +
                 "  }, {\n" +
                 "    \"name\" : \"b\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"bWithNullable\",\n" +
-                "    \"type\" : \"string\",\n" +
+                "    \"type\" : \"String\",\n" +
                 "    \"nullable\" : true\n" +
                 "  }, {\n" +
                 "    \"name\" : \"integerWithNullable\",\n" +
@@ -92,15 +92,15 @@ public class NullableTest {
                 "    \"name\" : \"list\",\n" +
                 "    \"type\" : {\n" +
                 "      \"type\" : \"list\",\n" +
-                "      \"items\" : \"string\",\n" +
+                "      \"items\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.List\"\n" +
                 "    }\n" +
                 "  }, {\n" +
                 "    \"name\" : \"map\",\n" +
                 "    \"type\" : {\n" +
                 "      \"type\" : \"map\",\n" +
-                "      \"keys\" : \"string\",\n" +
-                "      \"values\" : \"string\",\n" +
+                "      \"keys\" : \"String\",\n" +
+                "      \"values\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Map\"\n" +
                 "    }\n" +
                 "  }, {\n" +
@@ -111,7 +111,7 @@ public class NullableTest {
                 "    \"name\" : \"set\",\n" +
                 "    \"type\" : {\n" +
                 "      \"type\" : \"set\",\n" +
-                "      \"items\" : \"string\",\n" +
+                "      \"items\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Set\"\n" +
                 "    }\n" +
                 "  } ]\n" +

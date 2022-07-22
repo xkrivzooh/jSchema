@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.nio.ByteBuffer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class PrimitiveTypeSchemaTest {
 
@@ -47,7 +47,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_string_schema_create() {
         String schema = TypeSchema.getSchemaString(String.class);
-        assertEquals("\"string\"", schema);
+        assertEquals("\"String\"", schema);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Byte_schema_create() {
         String schema = TypeSchema.getSchemaString(Byte.class);
-        assertEquals("{\"type\":\"byte\",\"primitive-type\":false}", schema);
+        assertEquals("\"Byte\"", schema);
     }
 
     @Test

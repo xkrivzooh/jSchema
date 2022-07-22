@@ -23,6 +23,7 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
 
     int hashCode = NO_HASHCODE;
     protected static final int NO_HASHCODE = Integer.MIN_VALUE;
+    @Deprecated
     static final String PRIMITIVE_TYPE = "primitive-type";
     static final String NULL_ABLE_PROP = "nullable";
     static final String CLASS_PROP = "java-class";
@@ -119,12 +120,11 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 return schema;
             }
         } else if ((type == Byte.class) || (type == Byte.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.BYTE);
             boolean primitive = ((Class<?>) type).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.BYTE);
             }
-            return result;
+            return TypeSchema.create(SchemaType.BYTE_WRAPPER);
         } else if ((type == Short.class) || (type == Short.TYPE)) {
             TypeSchema result = TypeSchema.create(SchemaType.SHORT);
             boolean primitive = ((Class<?>) type).isPrimitive();
@@ -338,6 +338,8 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
         switch (type) {
             case BYTE:
                 return new ByteSchema();
+            case BYTE_WRAPPER:
+                return new ByteWrapperSchema();
             case BYTES:
                 return new BytesSchema();
             case SHORT:

@@ -70,8 +70,8 @@ public class ListSchemaTest {
                 "    \"type\" : \"list\",\n" +
                 "    \"items\" : {\n" +
                 "      \"type\" : \"map\",\n" +
-                "      \"keys\" : \"string\",\n" +
-                "      \"values\" : \"string\",\n" +
+                "      \"keys\" : \"String\",\n" +
+                "      \"values\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Map\"\n" +
                 "    },\n" +
                 "    \"java-class\" : \"java.util.List\"\n" +

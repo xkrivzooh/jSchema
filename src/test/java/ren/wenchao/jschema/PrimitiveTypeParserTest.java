@@ -66,7 +66,7 @@ public class PrimitiveTypeParserTest extends BaseTest{
     public void test15() {
         TypeSchema typeSchema = parse(getPrettySchemaString(String.class));
         Assert.assertTrue(typeSchema instanceof StringSchema);
-        Assert.assertEquals("\"string\"", typeSchema.toString());
+        Assert.assertEquals("\"String\"", typeSchema.toString());
     }
 
     @Test

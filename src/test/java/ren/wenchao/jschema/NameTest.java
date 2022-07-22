@@ -24,7 +24,7 @@ public class NameTest extends BaseTest{
                 "    \"type\" : \"int\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"b1\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  } ]\n" +
                 "}", getPrettySchemaString(A.class));
     }

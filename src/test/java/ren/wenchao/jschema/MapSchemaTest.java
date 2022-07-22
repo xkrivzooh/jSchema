@@ -36,7 +36,7 @@ public class MapSchemaTest {
 
         Assert.assertEquals("{\n" +
                 "  \"type\" : \"map\",\n" +
-                "  \"keys\" : \"string\",\n" +
+                "  \"keys\" : \"String\",\n" +
                 "  \"values\" : {\n" +
                 "    \"type\" : \"int\",\n" +
                 "    \"primitive-type\" : false\n" +
