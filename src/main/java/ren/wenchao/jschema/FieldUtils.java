@@ -31,6 +31,7 @@ class FieldUtils {
             case FLOAT:
             case FLOAT_WRAPPER:
             case DOUBLE:
+            case DOUBLE_WRAPPER:
                 return defaultValue.isNumber();
             case BOOLEAN:
                 return defaultValue.isBoolean();

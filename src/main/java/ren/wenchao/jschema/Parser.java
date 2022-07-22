@@ -179,7 +179,8 @@ class Parser {
                     if (defaultValue != null
                             && (SchemaType.FLOAT.equals(fieldSchema.getType())
                             || SchemaType.FLOAT_WRAPPER.equals(fieldSchema.getType())
-                            || SchemaType.DOUBLE.equals(fieldSchema.getType()))
+                            || SchemaType.DOUBLE.equals(fieldSchema.getType())
+                            || SchemaType.DOUBLE_WRAPPER.equals(fieldSchema.getType()))
                             && defaultValue.isTextual())
                         defaultValue = new DoubleNode(Double.valueOf(defaultValue.textValue()));
                     Field f = new Field(fieldName, fieldSchema, fieldDoc, defaultValue, true, order);

@@ -114,7 +114,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Double_schema_create() {
         String schema = TypeSchema.getSchemaString(Double.class);
-        assertEquals("{\"type\":\"double\",\"primitive-type\":false}", schema);
+        assertEquals("\"Double\"", schema);
     }
 
     @Test

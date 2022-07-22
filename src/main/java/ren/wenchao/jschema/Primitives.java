@@ -26,14 +26,19 @@ class Primitives {
         PRIMITIVES.put("float", SchemaType.FLOAT);
         PRIMITIVES.put("Float", SchemaType.FLOAT_WRAPPER);
         PRIMITIVES.put("double", SchemaType.DOUBLE);
+        PRIMITIVES.put("Double", SchemaType.DOUBLE_WRAPPER);
         PRIMITIVES.put("boolean", SchemaType.BOOLEAN);
         PRIMITIVES.put("null", SchemaType.NULL);
     }
 
-    /** A map from primitive types to their corresponding wrapper types. */
+    /**
+     * A map from primitive types to their corresponding wrapper types.
+     */
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_TYPE;
 
-    /** A map from wrapper types to their corresponding primitive types. */
+    /**
+     * A map from wrapper types to their corresponding primitive types.
+     */
     private static final Map<Class<?>, Class<?>> WRAPPER_TO_PRIMITIVE_TYPE;
 
     // Sad that we can't use a BiMap. :(
