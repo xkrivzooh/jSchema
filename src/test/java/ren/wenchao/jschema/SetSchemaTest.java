@@ -47,10 +47,7 @@ public class SetSchemaTest {
                 "  \"type\" : \"set\",\n" +
                 "  \"items\" : {\n" +
                 "    \"type\" : \"set\",\n" +
-                "    \"items\" : {\n" +
-                "      \"type\" : \"int\",\n" +
-                "      \"primitive-type\" : false\n" +
-                "    },\n" +
+                "    \"items\" : \"Integer\",\n" +
                 "    \"java-class\" : \"java.util.Set\"\n" +
                 "  },\n" +
                 "  \"java-class\" : \"java.util.Set\"\n" +

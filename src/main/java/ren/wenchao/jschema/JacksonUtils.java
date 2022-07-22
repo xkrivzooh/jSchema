@@ -102,7 +102,7 @@ class JacksonUtils {
         } else if (jsonNode.isBoolean()) {
             return jsonNode.asBoolean();
         } else if (jsonNode.isInt()) {
-            if (schema == null || schema.getType().equals(SchemaType.INT)) {
+            if (schema == null || schema.getType().equals(SchemaType.INT) || schema.getType().equals(SchemaType.INT_WRAPPER)) {
                 return jsonNode.asInt();
             } else if (schema.getType().equals(SchemaType.LONG)) {
                 return jsonNode.asLong();
@@ -114,7 +114,7 @@ class JacksonUtils {
         } else if (jsonNode.isLong()) {
             if (schema == null || schema.getType().equals(SchemaType.LONG)) {
                 return jsonNode.asLong();
-            } else if (schema.getType().equals(SchemaType.INT)) {
+            } else if (schema.getType().equals(SchemaType.INT) || schema.getType().equals(SchemaType.INT_WRAPPER)) {
                 if (jsonNode.canConvertToInt()) {
                     return jsonNode.asInt();
                 } else {

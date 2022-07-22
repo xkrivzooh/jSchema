@@ -14,10 +14,7 @@ public class ListSchemaTest {
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
                 "  \"type\" : \"list\",\n" +
-                "  \"items\" : {\n" +
-                "    \"type\" : \"int\",\n" +
-                "    \"primitive-type\" : false\n" +
-                "  },\n" +
+                "  \"items\" : \"Integer\",\n" +
                 "  \"java-class\" : \"java.util.List\"\n" +
                 "}", TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
     }
@@ -49,10 +46,7 @@ public class ListSchemaTest {
                 "  \"type\" : \"list\",\n" +
                 "  \"items\" : {\n" +
                 "    \"type\" : \"list\",\n" +
-                "    \"items\" : {\n" +
-                "      \"type\" : \"int\",\n" +
-                "      \"primitive-type\" : false\n" +
-                "    },\n" +
+                "    \"items\" : \"Integer\",\n" +
                 "    \"java-class\" : \"java.util.List\"\n" +
                 "  },\n" +
                 "  \"java-class\" : \"java.util.List\"\n" +

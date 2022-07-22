@@ -17,7 +17,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_integer_schema_create() {
         String schema = TypeSchema.getSchemaString(Integer.class);
-        assertEquals("{\"type\":\"int\",\"primitive-type\":false}", schema);
+        assertEquals("\"Integer\"", schema);
     }
 
     @Test

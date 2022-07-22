@@ -18,6 +18,7 @@ class Primitives {
         PRIMITIVES.put("byte", SchemaType.BYTE);
         PRIMITIVES.put("Byte", SchemaType.BYTE_WRAPPER);
         PRIMITIVES.put("int", SchemaType.INT);
+        PRIMITIVES.put("Integer", SchemaType.INT_WRAPPER);
         PRIMITIVES.put("short", SchemaType.SHORT);
         PRIMITIVES.put("Short", SchemaType.SHORT_WRAPPER);
         PRIMITIVES.put("long", SchemaType.LONG);

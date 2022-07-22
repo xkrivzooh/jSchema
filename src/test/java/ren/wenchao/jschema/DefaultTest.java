@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DefaultTest {
+    //todo all type test
 
     private static class A {
         @Default("1")

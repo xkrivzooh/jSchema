@@ -22,6 +22,8 @@ class FieldUtils {
             case ENUM:
             case INT:
                 return defaultValue.isIntegralNumber() && defaultValue.canConvertToInt();
+            case INT_WRAPPER:
+                return (defaultValue.isIntegralNumber() && defaultValue.canConvertToInt()) || defaultValue.isNull();
             case LONG:
                 return defaultValue.isIntegralNumber() && defaultValue.canConvertToLong();
             case FLOAT:

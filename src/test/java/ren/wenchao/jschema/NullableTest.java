@@ -45,10 +45,7 @@ public class NullableTest {
                 "    \"nullable\" : true\n" +
                 "  }, {\n" +
                 "    \"name\" : \"integerWithNullable\",\n" +
-                "    \"type\" : {\n" +
-                "      \"type\" : \"int\",\n" +
-                "      \"primitive-type\" : false\n" +
-                "    },\n" +
+                "    \"type\" : \"Integer\",\n" +
                 "    \"nullable\" : true\n" +
                 "  } ]\n" +
                 "}", TypeSchema.getSchema(A.class).toString(true));
