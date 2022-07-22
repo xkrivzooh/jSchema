@@ -17,7 +17,8 @@ import org.junit.runners.Suite;
         EnumSchemaTest.class,
         AliasTest.class,
         DocTest.class,
-        IgnoreTest.class
+        IgnoreTest.class,
+        MetaTest.class
 })
 public class AllTest {
 }
