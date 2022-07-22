@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        SchemaTypeTest.class,
         PrimitiveTypeSchemaTest.class,
         ClassTypeSchemaTest.class,
         ArraySchemaTest.class,
