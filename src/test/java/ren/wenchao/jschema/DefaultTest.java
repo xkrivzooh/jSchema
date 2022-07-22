@@ -3,9 +3,7 @@ package ren.wenchao.jschema;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DefaultTest {
-    //todo all type test
-
+public class DefaultTest extends BaseTest {
     private static class A {
         @Default("1")
         int foo;
