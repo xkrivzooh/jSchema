@@ -41,7 +41,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Long_schema_create() {
         String schema = TypeSchema.getSchemaString(Long.class);
-        assertEquals("{\"type\":\"long\",\"primitive-type\":false}", schema);
+        assertEquals("\"Long\"", schema);
     }
 
     @Test

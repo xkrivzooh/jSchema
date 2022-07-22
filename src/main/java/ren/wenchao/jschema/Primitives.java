@@ -22,6 +22,7 @@ class Primitives {
         PRIMITIVES.put("short", SchemaType.SHORT);
         PRIMITIVES.put("Short", SchemaType.SHORT_WRAPPER);
         PRIMITIVES.put("long", SchemaType.LONG);
+        PRIMITIVES.put("Long", SchemaType.LONG_WRAPPER);
         PRIMITIVES.put("float", SchemaType.FLOAT);
         PRIMITIVES.put("double", SchemaType.DOUBLE);
         PRIMITIVES.put("boolean", SchemaType.BOOLEAN);
