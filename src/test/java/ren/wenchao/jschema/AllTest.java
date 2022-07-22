@@ -19,7 +19,8 @@ import org.junit.runners.Suite;
         DocTest.class,
         IgnoreTest.class,
         MetaTest.class,
-        NameTest.class
+        NameTest.class,
+        StringableTest.class
 })
 public class AllTest {
 }
