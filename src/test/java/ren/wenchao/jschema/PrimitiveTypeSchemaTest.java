@@ -59,7 +59,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Character_schema_create() {
         String schema = TypeSchema.getSchemaString(Character.class);
-        assertEquals("{\"type\":\"char\",\"primitive-type\":false}", schema);
+        assertEquals("\"Character\"", schema);
     }
 
     @Test

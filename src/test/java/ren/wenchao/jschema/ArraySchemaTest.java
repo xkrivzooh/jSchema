@@ -18,7 +18,7 @@ public class ArraySchemaTest {
         assertEquals("{\"type\":\"array\",\"items\":\"double\",\"java-class\":\"[D\"}", TypeSchema.getSchemaString(double[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"Double\",\"java-class\":\"[Ljava.lang.Double;\"}", TypeSchema.getSchemaString(Double[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"char\",\"java-class\":\"[C\"}", TypeSchema.getSchemaString(char[].class));
-        assertEquals("{\"type\":\"array\",\"items\":{\"type\":\"char\",\"primitive-type\":false},\"java-class\":\"[Ljava.lang.Character;\"}", TypeSchema.getSchemaString(Character[].class));
+        assertEquals("{\"type\":\"array\",\"items\":\"Character\",\"java-class\":\"[Ljava.lang.Character;\"}", TypeSchema.getSchemaString(Character[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"boolean\",\"java-class\":\"[Z\"}", TypeSchema.getSchemaString(boolean[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"Boolean\",\"java-class\":\"[Ljava.lang.Boolean;\"}", TypeSchema.getSchemaString(Boolean[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"String\",\"java-class\":\"[Ljava.lang.String;\"}", TypeSchema.getSchemaString(String[].class));
