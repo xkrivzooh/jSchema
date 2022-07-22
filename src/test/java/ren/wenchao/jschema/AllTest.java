@@ -16,7 +16,8 @@ import org.junit.runners.Suite;
         NullableTest.class,
         EnumSchemaTest.class,
         AliasTest.class,
-        DocTest.class
+        DocTest.class,
+        IgnoreTest.class
 })
 public class AllTest {
 }
