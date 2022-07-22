@@ -143,7 +143,7 @@ class Parser {
             NameWrapper name = null;
             String savedSpace = names.space();
             String doc = null;
-            if (type.equals("record") || type.equals("error") || type.equals("enum") || type.equals("fixed")) {
+            if (type.equals("record") || type.equals("error") || type.equals("enum")) {
                 String space = getOptionalText(schema, "namespace");
                 doc = getOptionalText(schema, "doc");
                 if (space == null)
@@ -156,8 +156,11 @@ class Parser {
             } else if (type.equals("record") || type.equals("error")) { // record
                 List<Field> fields = new ArrayList<>();
                 result = new RecordSchema(name, doc, type.equals("error"));
-                if (name != null)
+                if (name != null) {
                     names.add(result);
+                }
+
+                JsonNode typesNode = schema.get("types");
                 JsonNode fieldsNode = schema.get("fields");
                 if (fieldsNode == null || !fieldsNode.isArray())
                     throw new SchemaParseException("Record has no fields: " + schema);
@@ -167,9 +170,14 @@ class Parser {
                     JsonNode fieldTypeNode = field.get("type");
                     if (fieldTypeNode == null)
                         throw new SchemaParseException("No field type: " + field);
-                    if (fieldTypeNode.isTextual() && names.get(fieldTypeNode.textValue()) == null)
-                        throw new SchemaParseException(fieldTypeNode + " is not a defined name." + " The type of the \"" + fieldName
-                                + "\" field must be" + " a defined name or a {\"type\": ...} expression.");
+                    if (fieldTypeNode.isTextual() && names.get(fieldTypeNode.textValue()) == null) {
+                        if ((typesNode != null) && (typesNode.get(fieldTypeNode.textValue()) != null)) {
+                            fieldTypeNode = typesNode.get(fieldTypeNode.textValue());
+                        } else {
+                            throw new SchemaParseException(fieldTypeNode + " is not a defined name." + " The type of the \"" + fieldName
+                                    + "\" field must be" + " a defined name or a {\"type\": ...} expression.");
+                        }
+                    }
                     TypeSchema fieldSchema = parse(fieldTypeNode, names);
                     Field.Order order = Field.Order.ASCENDING;
                     JsonNode orderNode = field.get("order");
@@ -208,12 +216,22 @@ class Parser {
                 result = new EnumSchema(name, doc, symbols, defaultSymbol);
                 if (name != null)
                     names.add(result);
+            } else if (type.equals("List")) { //list
+                JsonNode itemsNode = schema.get("items");
+                if (itemsNode == null)
+                    throw new SchemaParseException("List has no items type: " + schema);
+                result = new ListSchema(parse(itemsNode, names));
+            } else if (type.equals("Set")) { //set
+                JsonNode itemsNode = schema.get("items");
+                if (itemsNode == null)
+                    throw new SchemaParseException("Set has no items type: " + schema);
+                result = new SetSchema(parse(itemsNode, names));
             } else if (type.equals("array")) { // array
                 JsonNode itemsNode = schema.get("items");
                 if (itemsNode == null)
                     throw new SchemaParseException("Array has no items type: " + schema);
                 result = new ArraySchema(parse(itemsNode, names));
-            } else if (type.equals("map")) { // map
+            } else if (type.equals("Map")) { // map
                 JsonNode keysNode = schema.get("keys");
                 if (keysNode == null)
                     throw new SchemaParseException("Map has no keys type: " + schema);

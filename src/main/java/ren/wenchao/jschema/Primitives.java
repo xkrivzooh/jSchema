@@ -29,6 +29,8 @@ class Primitives {
         PRIMITIVES.put("Double", SchemaType.DOUBLE_WRAPPER);
         PRIMITIVES.put("boolean", SchemaType.BOOLEAN);
         PRIMITIVES.put("Boolean", SchemaType.BOOLEAN_WRAPPER);
+        PRIMITIVES.put("char", SchemaType.CHAR);
+        PRIMITIVES.put("Character", SchemaType.CHAR_WRAPPER);
         PRIMITIVES.put("null", SchemaType.NULL);
     }
 

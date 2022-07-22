@@ -168,7 +168,7 @@ class RecordSchema extends NamedSchema {
         gen.writeEndArray();
     }
 
-    void fillTypes(Names names, JsonGenerator gen) throws IOException{
+    void fillTypes(Names names, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
         if (fields != null) {
             for (Field field : fields) {

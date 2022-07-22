@@ -38,7 +38,7 @@ class ListSchema extends TypeSchema {
     @Override
     void toJson(Names names, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
-        gen.writeStringField("type", "list");
+        gen.writeStringField("type", "List");
         gen.writeFieldName("items");
         elementType.toJson(names, gen);
         writeProps(gen);

@@ -23,17 +23,15 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
 
     int hashCode = NO_HASHCODE;
     protected static final int NO_HASHCODE = Integer.MIN_VALUE;
-    @Deprecated
-    static final String PRIMITIVE_TYPE = "primitive-type";
     static final String NULL_ABLE_PROP = "nullable";
     static final String CLASS_PROP = "java-class";
     static final String KEY_CLASS_PROP = "java-key-class";
 
     private static final String STRING_OUTER_PARENT_REFERENCE = "this$0";
-    static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases"));
+    static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases", "types", "keys"));
 
     static final Set<String> FIELD_RESERVED = Collections
-            .unmodifiableSet(new HashSet<>(Arrays.asList("default", "doc", "name", "order", "type", "aliases")));
+            .unmodifiableSet(new HashSet<>(Arrays.asList("default", "doc", "name", "order", "type", "aliases", "types", "keys")));
     static final Set<String> ENUM_RESERVED = new HashSet<>(SCHEMA_RESERVED);
 
     static {
