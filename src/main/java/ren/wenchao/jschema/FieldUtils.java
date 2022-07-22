@@ -34,6 +34,7 @@ class FieldUtils {
             case DOUBLE_WRAPPER:
                 return defaultValue.isNumber();
             case BOOLEAN:
+            case BOOLEAN_WRAPPER:
                 return defaultValue.isBoolean();
             case NULL:
                 return defaultValue.isNull();

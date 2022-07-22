@@ -2,7 +2,7 @@ package ren.wenchao.jschema;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ArraySchemaTest {
 
@@ -20,7 +20,7 @@ public class ArraySchemaTest {
         assertEquals("{\"type\":\"array\",\"items\":\"char\",\"java-class\":\"[C\"}", TypeSchema.getSchemaString(char[].class));
         assertEquals("{\"type\":\"array\",\"items\":{\"type\":\"char\",\"primitive-type\":false},\"java-class\":\"[Ljava.lang.Character;\"}", TypeSchema.getSchemaString(Character[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"boolean\",\"java-class\":\"[Z\"}", TypeSchema.getSchemaString(boolean[].class));
-        assertEquals("{\"type\":\"array\",\"items\":{\"type\":\"boolean\",\"primitive-type\":false},\"java-class\":\"[Ljava.lang.Boolean;\"}", TypeSchema.getSchemaString(Boolean[].class));
+        assertEquals("{\"type\":\"array\",\"items\":\"Boolean\",\"java-class\":\"[Ljava.lang.Boolean;\"}", TypeSchema.getSchemaString(Boolean[].class));
         assertEquals("{\"type\":\"array\",\"items\":\"String\",\"java-class\":\"[Ljava.lang.String;\"}", TypeSchema.getSchemaString(String[].class));
         assertEquals("{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Object\",\"namespace\":\"java.lang\",\"types\":{},\"fields\":[]},\"java-class\":\"[Ljava.lang.Object;\"}", TypeSchema.getSchemaString(Object[].class));
     }

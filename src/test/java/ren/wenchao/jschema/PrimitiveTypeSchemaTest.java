@@ -71,7 +71,7 @@ public class PrimitiveTypeSchemaTest {
     @Test
     public void test_Boolean_schema_create() {
         String schema = TypeSchema.getSchemaString(Boolean.class);
-        assertEquals("{\"type\":\"boolean\",\"primitive-type\":false}", schema);
+        assertEquals("\"Boolean\"", schema);
     }
 
     @Test

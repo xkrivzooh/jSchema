@@ -281,12 +281,11 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
             }
             return TypeSchema.create(SchemaType.DOUBLE_WRAPPER);
         } else if ((type == Boolean.class) || (type == Boolean.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.BOOLEAN);
             boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.BOOLEAN);
             }
-            return result;
+            return TypeSchema.create(SchemaType.BOOLEAN_WRAPPER);
         } else if ((type == Void.class) || (type == Void.TYPE))
             return TypeSchema.create(SchemaType.VOID);
         else if (type instanceof ParameterizedType) {
@@ -359,6 +358,8 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 return new DoubleWrapperSchema();
             case BOOLEAN:
                 return new BooleanSchema();
+            case BOOLEAN_WRAPPER:
+                return new BooleanWrapperSchema();
             case CHAR:
                 return new CharSchema();
             case STRING:
