@@ -39,7 +39,7 @@ class SetSchema extends TypeSchema {
     @Override
     void toJson(Names names, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
-        gen.writeStringField("type", "set");
+        gen.writeStringField("type", "Set");
         gen.writeFieldName("items");
         elementType.toJson(names, gen);
         writeProps(gen);

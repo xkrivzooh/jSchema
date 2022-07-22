@@ -23,16 +23,15 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
 
     int hashCode = NO_HASHCODE;
     protected static final int NO_HASHCODE = Integer.MIN_VALUE;
-    static final String PRIMITIVE_TYPE = "primitive-type";
     static final String NULL_ABLE_PROP = "nullable";
     static final String CLASS_PROP = "java-class";
     static final String KEY_CLASS_PROP = "java-key-class";
 
     private static final String STRING_OUTER_PARENT_REFERENCE = "this$0";
-    static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases"));
+    static final Set<String> SCHEMA_RESERVED = new HashSet<>(Arrays.asList("doc", "fields", "items", "name", "namespace", "size", "symbols", "values", "type", "aliases", "types", "keys"));
 
     static final Set<String> FIELD_RESERVED = Collections
-            .unmodifiableSet(new HashSet<>(Arrays.asList("default", "doc", "name", "order", "type", "aliases")));
+            .unmodifiableSet(new HashSet<>(Arrays.asList("default", "doc", "name", "order", "type", "aliases", "types", "keys")));
     static final Set<String> ENUM_RESERVED = new HashSet<>(SCHEMA_RESERVED);
 
     static {
@@ -119,26 +118,23 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 return schema;
             }
         } else if ((type == Byte.class) || (type == Byte.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.BYTE);
             boolean primitive = ((Class<?>) type).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.BYTE);
             }
-            return result;
+            return TypeSchema.create(SchemaType.BYTE_WRAPPER);
         } else if ((type == Short.class) || (type == Short.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.SHORT);
             boolean primitive = ((Class<?>) type).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.SHORT);
             }
-            return result;
+            return TypeSchema.create(SchemaType.SHORT_WRAPPER);
         } else if ((type == Character.class) || (type == Character.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.CHAR);
             boolean primitive = ((Class<?>) type).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.CHAR);
             }
-            return result;
+            return TypeSchema.create(SchemaType.CHAR_WRAPPER);
         } else if (type instanceof Class) { // Class
             Class<?> c = (Class<?>) type;
             if (c.isPrimitive() || // primitives
@@ -258,40 +254,35 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
         else if (type == ByteBuffer.class)
             return TypeSchema.create(SchemaType.BYTES);
         else if ((type == Integer.class) || (type == Integer.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.INT);
             boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.INT);
             }
-            return result;
+            return TypeSchema.create(SchemaType.INT_WRAPPER);
         } else if ((type == Long.class) || (type == Long.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.LONG);
             boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.LONG);
             }
-            return result;
+            return TypeSchema.create(SchemaType.LONG_WRAPPER);
         } else if ((type == Float.class) || (type == Float.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.FLOAT);
             boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.FLOAT);
             }
-            return result;
+            return TypeSchema.create(SchemaType.FLOAT_WRAPPER);
         } else if ((type == Double.class) || (type == Double.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.DOUBLE);
             boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.DOUBLE);
             }
-            return result;
+            return TypeSchema.create(SchemaType.DOUBLE_WRAPPER);
         } else if ((type == Boolean.class) || (type == Boolean.TYPE)) {
-            TypeSchema result = TypeSchema.create(SchemaType.BOOLEAN);
             boolean primitive = ((Class<?>) Objects.requireNonNull(type)).isPrimitive();
-            if (!primitive) {
-                result.addProp(PRIMITIVE_TYPE, primitive);
+            if (primitive) {
+                return TypeSchema.create(SchemaType.BOOLEAN);
             }
-            return result;
+            return TypeSchema.create(SchemaType.BOOLEAN_WRAPPER);
         } else if ((type == Void.class) || (type == Void.TYPE))
             return TypeSchema.create(SchemaType.VOID);
         else if (type instanceof ParameterizedType) {
@@ -338,22 +329,38 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
         switch (type) {
             case BYTE:
                 return new ByteSchema();
+            case BYTE_WRAPPER:
+                return new ByteWrapperSchema();
             case BYTES:
                 return new BytesSchema();
             case SHORT:
                 return new ShortSchema();
+            case SHORT_WRAPPER:
+                return new ShortWrapperSchema();
             case INT:
                 return new IntSchema();
+            case INT_WRAPPER:
+                return new IntWrapperSchema();
             case LONG:
                 return new LongSchema();
+            case LONG_WRAPPER:
+                return new LongWrapperSchema();
             case FLOAT:
                 return new FloatSchema();
+            case FLOAT_WRAPPER:
+                return new FloatWrapperSchema();
             case DOUBLE:
                 return new DoubleSchema();
+            case DOUBLE_WRAPPER:
+                return new DoubleWrapperSchema();
             case BOOLEAN:
                 return new BooleanSchema();
+            case BOOLEAN_WRAPPER:
+                return new BooleanWrapperSchema();
             case CHAR:
                 return new CharSchema();
+            case CHAR_WRAPPER:
+                return new CharWrapperSchema();
             case STRING:
                 return new StringSchema();
             case VOID:

@@ -14,10 +14,7 @@ public class ListSchemaTest {
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
                 "  \"type\" : \"list\",\n" +
-                "  \"items\" : {\n" +
-                "    \"type\" : \"int\",\n" +
-                "    \"primitive-type\" : false\n" +
-                "  },\n" +
+                "  \"items\" : \"Integer\",\n" +
                 "  \"java-class\" : \"java.util.List\"\n" +
                 "}", TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
     }
@@ -49,10 +46,7 @@ public class ListSchemaTest {
                 "  \"type\" : \"list\",\n" +
                 "  \"items\" : {\n" +
                 "    \"type\" : \"list\",\n" +
-                "    \"items\" : {\n" +
-                "      \"type\" : \"int\",\n" +
-                "      \"primitive-type\" : false\n" +
-                "    },\n" +
+                "    \"items\" : \"Integer\",\n" +
                 "    \"java-class\" : \"java.util.List\"\n" +
                 "  },\n" +
                 "  \"java-class\" : \"java.util.List\"\n" +
@@ -70,8 +64,8 @@ public class ListSchemaTest {
                 "    \"type\" : \"list\",\n" +
                 "    \"items\" : {\n" +
                 "      \"type\" : \"map\",\n" +
-                "      \"keys\" : \"string\",\n" +
-                "      \"values\" : \"string\",\n" +
+                "      \"keys\" : \"String\",\n" +
+                "      \"values\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Map\"\n" +
                 "    },\n" +
                 "    \"java-class\" : \"java.util.List\"\n" +

@@ -79,7 +79,7 @@ public class EnumSchemaTest {
                 "    \"type\" : \"ren.wenchao.jschema.EnumSchemaTest.B\"\n" +
                 "  }, {\n" +
                 "    \"name\" : \"str\",\n" +
-                "    \"type\" : \"string\"\n" +
+                "    \"type\" : \"String\"\n" +
                 "  } ]\n" +
                 "}", TypeSchema.getSchema(C.class).toString(true));
     }

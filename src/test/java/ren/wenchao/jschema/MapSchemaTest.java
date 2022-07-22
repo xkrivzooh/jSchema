@@ -15,14 +15,8 @@ public class MapSchemaTest {
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
                 "  \"type\" : \"map\",\n" +
-                "  \"keys\" : {\n" +
-                "    \"type\" : \"int\",\n" +
-                "    \"primitive-type\" : false\n" +
-                "  },\n" +
-                "  \"values\" : {\n" +
-                "    \"type\" : \"int\",\n" +
-                "    \"primitive-type\" : false\n" +
-                "  },\n" +
+                "  \"keys\" : \"Integer\",\n" +
+                "  \"values\" : \"Integer\",\n" +
                 "  \"java-class\" : \"java.util.Map\"\n" +
                 "}", TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
     }
@@ -36,11 +30,8 @@ public class MapSchemaTest {
 
         Assert.assertEquals("{\n" +
                 "  \"type\" : \"map\",\n" +
-                "  \"keys\" : \"string\",\n" +
-                "  \"values\" : {\n" +
-                "    \"type\" : \"int\",\n" +
-                "    \"primitive-type\" : false\n" +
-                "  },\n" +
+                "  \"keys\" : \"String\",\n" +
+                "  \"values\" : \"Integer\",\n" +
                 "  \"java-class\" : \"java.util.Map\"\n" +
                 "}", TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
     }

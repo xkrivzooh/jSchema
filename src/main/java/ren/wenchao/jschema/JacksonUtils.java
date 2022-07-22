@@ -102,33 +102,33 @@ class JacksonUtils {
         } else if (jsonNode.isBoolean()) {
             return jsonNode.asBoolean();
         } else if (jsonNode.isInt()) {
-            if (schema == null || schema.getType().equals(SchemaType.INT)) {
+            if (schema == null || schema.getType().equals(SchemaType.INT) || schema.getType().equals(SchemaType.INT_WRAPPER)) {
                 return jsonNode.asInt();
-            } else if (schema.getType().equals(SchemaType.LONG)) {
+            } else if (schema.getType().equals(SchemaType.LONG) || schema.getType().equals(SchemaType.LONG_WRAPPER)) {
                 return jsonNode.asLong();
-            } else if (schema.getType().equals(SchemaType.FLOAT)) {
+            } else if (schema.getType().equals(SchemaType.FLOAT) || schema.getType().equals(SchemaType.FLOAT_WRAPPER)) {
                 return (float) jsonNode.asDouble();
-            } else if (schema.getType().equals(SchemaType.DOUBLE)) {
+            } else if (schema.getType().equals(SchemaType.DOUBLE) || schema.getType().equals(SchemaType.DOUBLE_WRAPPER)) {
                 return jsonNode.asDouble();
             }
         } else if (jsonNode.isLong()) {
-            if (schema == null || schema.getType().equals(SchemaType.LONG)) {
+            if (schema == null || schema.getType().equals(SchemaType.LONG) || schema.getType().equals(SchemaType.LONG_WRAPPER)) {
                 return jsonNode.asLong();
-            } else if (schema.getType().equals(SchemaType.INT)) {
+            } else if (schema.getType().equals(SchemaType.INT) || schema.getType().equals(SchemaType.INT_WRAPPER)) {
                 if (jsonNode.canConvertToInt()) {
                     return jsonNode.asInt();
                 } else {
                     return jsonNode.asLong();
                 }
-            } else if (schema.getType().equals(SchemaType.FLOAT)) {
+            } else if (schema.getType().equals(SchemaType.FLOAT) || schema.getType().equals(SchemaType.FLOAT_WRAPPER)) {
                 return (float) jsonNode.asDouble();
-            } else if (schema.getType().equals(SchemaType.DOUBLE)) {
+            } else if (schema.getType().equals(SchemaType.DOUBLE) || schema.getType().equals(SchemaType.DOUBLE_WRAPPER)) {
                 return jsonNode.asDouble();
             }
         } else if (jsonNode.isDouble() || jsonNode.isFloat()) {
-            if (schema == null || schema.getType().equals(SchemaType.DOUBLE)) {
+            if (schema == null || schema.getType().equals(SchemaType.DOUBLE) || schema.getType().equals(SchemaType.DOUBLE_WRAPPER)) {
                 return jsonNode.asDouble();
-            } else if (schema.getType().equals(SchemaType.FLOAT)) {
+            } else if (schema.getType().equals(SchemaType.FLOAT) || schema.getType().equals(SchemaType.FLOAT_WRAPPER)) {
                 return (float) jsonNode.asDouble();
             }
         } else if (jsonNode.isTextual()) {

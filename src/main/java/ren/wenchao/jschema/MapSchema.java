@@ -41,7 +41,7 @@ class MapSchema extends TypeSchema {
     @Override
     void toJson(Names names, JsonGenerator gen) throws IOException {
         gen.writeStartObject();
-        gen.writeStringField("type", "map");
+        gen.writeStringField("type", "Map");
         gen.writeFieldName("keys");
         keyType.toJson(names, gen);
         gen.writeFieldName("values");

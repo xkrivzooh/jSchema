@@ -13,20 +13,35 @@ class Primitives {
     static final Map<String, SchemaType> PRIMITIVES = new HashMap<>();
 
     static {
-        PRIMITIVES.put("string", SchemaType.STRING);
+        PRIMITIVES.put("String", SchemaType.STRING);
         PRIMITIVES.put("bytes", SchemaType.BYTES);
+        PRIMITIVES.put("byte", SchemaType.BYTE);
+        PRIMITIVES.put("Byte", SchemaType.BYTE_WRAPPER);
         PRIMITIVES.put("int", SchemaType.INT);
+        PRIMITIVES.put("Integer", SchemaType.INT_WRAPPER);
+        PRIMITIVES.put("short", SchemaType.SHORT);
+        PRIMITIVES.put("Short", SchemaType.SHORT_WRAPPER);
         PRIMITIVES.put("long", SchemaType.LONG);
+        PRIMITIVES.put("Long", SchemaType.LONG_WRAPPER);
         PRIMITIVES.put("float", SchemaType.FLOAT);
+        PRIMITIVES.put("Float", SchemaType.FLOAT_WRAPPER);
         PRIMITIVES.put("double", SchemaType.DOUBLE);
+        PRIMITIVES.put("Double", SchemaType.DOUBLE_WRAPPER);
         PRIMITIVES.put("boolean", SchemaType.BOOLEAN);
+        PRIMITIVES.put("Boolean", SchemaType.BOOLEAN_WRAPPER);
+        PRIMITIVES.put("char", SchemaType.CHAR);
+        PRIMITIVES.put("Character", SchemaType.CHAR_WRAPPER);
         PRIMITIVES.put("null", SchemaType.NULL);
     }
 
-    /** A map from primitive types to their corresponding wrapper types. */
+    /**
+     * A map from primitive types to their corresponding wrapper types.
+     */
     private static final Map<Class<?>, Class<?>> PRIMITIVE_TO_WRAPPER_TYPE;
 
-    /** A map from wrapper types to their corresponding primitive types. */
+    /**
+     * A map from wrapper types to their corresponding primitive types.
+     */
     private static final Map<Class<?>, Class<?>> WRAPPER_TO_PRIMITIVE_TYPE;
 
     // Sad that we can't use a BiMap. :(

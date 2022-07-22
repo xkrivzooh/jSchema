@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        SchemaTypeTest.class,
         PrimitiveTypeSchemaTest.class,
         ClassTypeSchemaTest.class,
         ArraySchemaTest.class,
@@ -14,7 +15,16 @@ import org.junit.runners.Suite;
         ListSchemaTest.class,
         SetSchemaTest.class,
         NullableTest.class,
-        EnumSchemaTest.class
+        EnumSchemaTest.class,
+        AliasTest.class,
+        DocTest.class,
+        IgnoreTest.class,
+        MetaTest.class,
+        NameTest.class,
+        StringableTest.class,
+        PrimitiveTypeParserTest.class,
+        SchemaParserTest.class,
+        TestJacksonUtils.class
 })
 public class AllTest {
 }

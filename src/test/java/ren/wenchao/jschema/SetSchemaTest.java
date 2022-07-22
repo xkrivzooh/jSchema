@@ -15,7 +15,7 @@ public class SetSchemaTest {
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
                 "  \"type\" : \"set\",\n" +
-                "  \"items\" : \"string\",\n" +
+                "  \"items\" : \"String\",\n" +
                 "  \"java-class\" : \"java.util.Set\"\n" +
                 "}", TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
     }
@@ -47,10 +47,7 @@ public class SetSchemaTest {
                 "  \"type\" : \"set\",\n" +
                 "  \"items\" : {\n" +
                 "    \"type\" : \"set\",\n" +
-                "    \"items\" : {\n" +
-                "      \"type\" : \"int\",\n" +
-                "      \"primitive-type\" : false\n" +
-                "    },\n" +
+                "    \"items\" : \"Integer\",\n" +
                 "    \"java-class\" : \"java.util.Set\"\n" +
                 "  },\n" +
                 "  \"java-class\" : \"java.util.Set\"\n" +
@@ -68,8 +65,8 @@ public class SetSchemaTest {
                 "    \"type\" : \"set\",\n" +
                 "    \"items\" : {\n" +
                 "      \"type\" : \"map\",\n" +
-                "      \"keys\" : \"string\",\n" +
-                "      \"values\" : \"string\",\n" +
+                "      \"keys\" : \"String\",\n" +
+                "      \"values\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Map\"\n" +
                 "    },\n" +
                 "    \"java-class\" : \"java.util.Set\"\n" +

@@ -22,12 +22,19 @@ class FieldUtils {
             case ENUM:
             case INT:
                 return defaultValue.isIntegralNumber() && defaultValue.canConvertToInt();
+            case INT_WRAPPER:
+                return (defaultValue.isIntegralNumber() && defaultValue.canConvertToInt()) || defaultValue.isNull();
             case LONG:
                 return defaultValue.isIntegralNumber() && defaultValue.canConvertToLong();
+            case LONG_WRAPPER:
+                return (defaultValue.isIntegralNumber() && defaultValue.canConvertToLong()) || defaultValue.isNull();
             case FLOAT:
+            case FLOAT_WRAPPER:
             case DOUBLE:
+            case DOUBLE_WRAPPER:
                 return defaultValue.isNumber();
             case BOOLEAN:
+            case BOOLEAN_WRAPPER:
                 return defaultValue.isBoolean();
             case NULL:
                 return defaultValue.isNull();

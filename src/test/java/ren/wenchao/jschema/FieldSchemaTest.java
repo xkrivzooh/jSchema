@@ -5,8 +5,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class FieldSchemaTest {
 
@@ -23,6 +22,10 @@ public class FieldSchemaTest {
         field = new Field("myField", TypeSchema.create(SchemaType.INT), "doc", Integer.MAX_VALUE);
         assertTrue(field.hasDefaultValue());
         assertEquals(Integer.MAX_VALUE, field.defaultVal());
+
+        field = new Field("myField", TypeSchema.create(SchemaType.INT), "doc", null);
+        assertFalse(field.hasDefaultValue());
+//        assertEquals(Integer.MAX_VALUE, field.defaultVal());
     }
 
     @Test
