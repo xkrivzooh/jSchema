@@ -15,7 +15,9 @@ class Primitives {
     static {
         PRIMITIVES.put("string", SchemaType.STRING);
         PRIMITIVES.put("bytes", SchemaType.BYTES);
+        PRIMITIVES.put("byte", SchemaType.BYTE);
         PRIMITIVES.put("int", SchemaType.INT);
+        PRIMITIVES.put("short", SchemaType.SHORT);
         PRIMITIVES.put("long", SchemaType.LONG);
         PRIMITIVES.put("float", SchemaType.FLOAT);
         PRIMITIVES.put("double", SchemaType.DOUBLE);

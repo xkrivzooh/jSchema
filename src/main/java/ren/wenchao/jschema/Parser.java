@@ -17,7 +17,7 @@ import static ren.wenchao.jschema.Primitives.PRIMITIVES;
  * added to the names known to the parser so that subsequently parsed schemas
  * may refer to it by name.
  */
-public class Parser {
+class Parser {
     private Names names = new Names();
     private boolean validate = true;
     private boolean validateDefaults = true;
@@ -256,7 +256,7 @@ public class Parser {
                         result.addAlias(alias);
             }
             return result;
-        }  else {
+        } else {
             throw new SchemaParseException("Schema not yet supported: " + schema);
         }
     }

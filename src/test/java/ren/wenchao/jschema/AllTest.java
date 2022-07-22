@@ -20,7 +20,8 @@ import org.junit.runners.Suite;
         IgnoreTest.class,
         MetaTest.class,
         NameTest.class,
-        StringableTest.class
+        StringableTest.class,
+        PrimitiveTypeParserTest.class
 })
 public class AllTest {
 }
