@@ -14,7 +14,7 @@ public class MapSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"map\",\n" +
+                "  \"type\" : \"Map\",\n" +
                 "  \"keys\" : \"Integer\",\n" +
                 "  \"values\" : \"Integer\",\n" +
                 "  \"java-class\" : \"java.util.Map\"\n" +
@@ -29,7 +29,7 @@ public class MapSchemaTest {
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
 
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"map\",\n" +
+                "  \"type\" : \"Map\",\n" +
                 "  \"keys\" : \"String\",\n" +
                 "  \"values\" : \"Integer\",\n" +
                 "  \"java-class\" : \"java.util.Map\"\n" +
@@ -47,7 +47,7 @@ public class MapSchemaTest {
     public void testMap3() {
         TypeSchema map = TypeSchema.createMap(TypeSchema.getSchema(int.class), TypeSchema.getSchema(int.class));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"map\",\n" +
+                "  \"type\" : \"Map\",\n" +
                 "  \"keys\" : \"int\",\n" +
                 "  \"values\" : \"int\"\n" +
                 "}", map.toString(true));

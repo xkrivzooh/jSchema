@@ -13,7 +13,7 @@ public class ListSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"list\",\n" +
+                "  \"type\" : \"List\",\n" +
                 "  \"items\" : \"Integer\",\n" +
                 "  \"java-class\" : \"java.util.List\"\n" +
                 "}", TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
@@ -25,7 +25,7 @@ public class ListSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"list\",\n" +
+                "  \"type\" : \"List\",\n" +
                 "  \"items\" : {\n" +
                 "    \"type\" : \"record\",\n" +
                 "    \"name\" : \"Object\",\n" +
@@ -43,9 +43,9 @@ public class ListSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"list\",\n" +
+                "  \"type\" : \"List\",\n" +
                 "  \"items\" : {\n" +
-                "    \"type\" : \"list\",\n" +
+                "    \"type\" : \"List\",\n" +
                 "    \"items\" : \"Integer\",\n" +
                 "    \"java-class\" : \"java.util.List\"\n" +
                 "  },\n" +
@@ -59,11 +59,11 @@ public class ListSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"list\",\n" +
+                "  \"type\" : \"List\",\n" +
                 "  \"items\" : {\n" +
-                "    \"type\" : \"list\",\n" +
+                "    \"type\" : \"List\",\n" +
                 "    \"items\" : {\n" +
-                "      \"type\" : \"map\",\n" +
+                "      \"type\" : \"Map\",\n" +
                 "      \"keys\" : \"String\",\n" +
                 "      \"values\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Map\"\n" +

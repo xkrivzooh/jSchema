@@ -13,8 +13,13 @@ public class NestedClassSchemaTest extends BaseTest {
         A a;
     }
 
+    static class C {
+        Object cObject;
+        B b;
+    }
+
     @Test
     public void test1() {
-        System.out.println(getPrettySchemaString(B.class));
+        System.out.println(getPrettySchemaString(C.class));
     }
 }

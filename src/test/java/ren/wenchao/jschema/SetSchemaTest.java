@@ -14,7 +14,7 @@ public class SetSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"set\",\n" +
+                "  \"type\" : \"Set\",\n" +
                 "  \"items\" : \"String\",\n" +
                 "  \"java-class\" : \"java.util.Set\"\n" +
                 "}", TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
@@ -26,7 +26,7 @@ public class SetSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"set\",\n" +
+                "  \"type\" : \"Set\",\n" +
                 "  \"items\" : {\n" +
                 "    \"type\" : \"record\",\n" +
                 "    \"name\" : \"Object\",\n" +
@@ -44,9 +44,9 @@ public class SetSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"set\",\n" +
+                "  \"type\" : \"Set\",\n" +
                 "  \"items\" : {\n" +
-                "    \"type\" : \"set\",\n" +
+                "    \"type\" : \"Set\",\n" +
                 "    \"items\" : \"Integer\",\n" +
                 "    \"java-class\" : \"java.util.Set\"\n" +
                 "  },\n" +
@@ -60,11 +60,11 @@ public class SetSchemaTest {
         };
         System.out.println(TypeSchema.getSchema(mapTypeReference.getType()).toString(true));
         Assert.assertEquals("{\n" +
-                "  \"type\" : \"set\",\n" +
+                "  \"type\" : \"Set\",\n" +
                 "  \"items\" : {\n" +
-                "    \"type\" : \"set\",\n" +
+                "    \"type\" : \"Set\",\n" +
                 "    \"items\" : {\n" +
-                "      \"type\" : \"map\",\n" +
+                "      \"type\" : \"Map\",\n" +
                 "      \"keys\" : \"String\",\n" +
                 "      \"values\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Map\"\n" +
