@@ -3,11 +3,9 @@ package ren.wenchao.jschema;
 import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Test;
-import ren.wenchao.jschema.constraints.Constraint;
 import ren.wenchao.jschema.constraints.NotNull;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionSchemaTest {
