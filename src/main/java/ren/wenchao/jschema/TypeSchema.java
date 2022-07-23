@@ -54,7 +54,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
         this.type = type;
     }
 
-    //todo 可以使用classValue来优化，Use ClassValue to avoid locking classloaders and is GC and thread safe.
     private static final LoadingCache<Type, TypeSchema> typeSchemaCache = CacheBuilder.newBuilder().build(new CacheLoader<Type, TypeSchema>() {
         @Override
         public TypeSchema load(Type key) throws Exception {
@@ -157,11 +156,6 @@ public abstract class TypeSchema extends JsonProperties implements Serializable 
                 // array
                 throw new SchemaRuntimeException("Can't find element type of Collection");
             }
-            //todo 暂不支持Conversion
-//            Conversion<?> conversion = getConversionByClass(c);
-//            if (conversion != null) {
-//                return conversion.getRecommendedSchema();
-//            }
             String fullName = c.getName();
             TypeSchema schema = names.get(fullName);
             if (schema == null) {

@@ -239,17 +239,7 @@ class Parser {
                 if (valuesNode == null)
                     throw new SchemaParseException("Map has no values type: " + schema);
                 result = new MapSchema(parse(keysNode, names), parse(valuesNode, names));
-            }
-            //todo 不支持fixed
-//            else if (type.equals("fixed")) { // fixed
-//                JsonNode sizeNode = schema.get("size");
-//                if (sizeNode == null || !sizeNode.isInt())
-//                    throw new SchemaParseException("Invalid or no size: " + schema);
-//                result = new FixedSchema(name, doc, sizeNode.intValue());
-//                if (name != null)
-//                    names.add(result);
-//            }
-            else { // For unions with self reference
+            } else { // For unions with self reference
                 NameWrapper nameFromType = new NameWrapper(type, names.space());
                 if (names.containsKey(nameFromType)) {
                     return names.get(nameFromType);
