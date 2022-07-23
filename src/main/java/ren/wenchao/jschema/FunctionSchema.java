@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 public class FunctionSchema {
 
@@ -86,8 +87,21 @@ public class FunctionSchema {
         gen.writeStartObject();
         for (Parameter parameter : request) {
             gen.writeFieldName(parameter.getName());
+            gen.writeStartObject();
+
+            gen.writeStringField("doc", parameter.getDoc());
+            Map<String, String> props = parameter.getProps();
+            if (props != null) {
+                for (Map.Entry<String, String> entry : props.entrySet()) {
+                    gen.writeStringField(entry.getKey(), entry.getValue());
+                }
+            }
+
+            gen.writeFieldName("type");
             TypeSchema schema = parameter.getSchema();
             schema.toJson(new Names(), gen);
+
+            gen.writeEndObject();
         }
         gen.writeEndObject();
 

@@ -44,8 +44,14 @@ public class FunctionSchemaTest {
                 "  \"functionName\" : \"f2\",\n" +
                 "  \"doc\" : null,\n" +
                 "  \"request\" : {\n" +
-                "    \"arg0\" : \"int\",\n" +
-                "    \"arg1\" : \"long\"\n" +
+                "    \"arg0\" : {\n" +
+                "      \"doc\" : \"\",\n" +
+                "      \"type\" : \"int\"\n" +
+                "    },\n" +
+                "    \"arg1\" : {\n" +
+                "      \"doc\" : \"\",\n" +
+                "      \"type\" : \"long\"\n" +
+                "    }\n" +
                 "  },\n" +
                 "  \"response\" : \"String\"\n" +
                 "}", FunctionSchema.getSchema(f2).toString(true));

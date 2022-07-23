@@ -1,8 +1,13 @@
 package ren.wenchao.jschema;
 
+import com.google.common.collect.Maps;
+
+import java.util.Map;
+
 public class Parameter {
     private String name;
     private String doc;
+    private Map<String, String> props = Maps.newHashMap();
     private TypeSchema schema;
 
     public String getName() {
@@ -27,5 +32,17 @@ public class Parameter {
 
     public void setSchema(TypeSchema schema) {
         this.schema = schema;
+    }
+
+    public void addProp(String key, String value) {
+        props.put(key, value);
+    }
+
+    public String getProp(String key) {
+        return props.get(key);
+    }
+
+    public Map<String, String> getProps() {
+        return props;
     }
 }
