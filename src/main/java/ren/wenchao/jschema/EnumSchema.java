@@ -46,10 +46,12 @@ class EnumSchema extends NamedSchema {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
-        if (!(o instanceof EnumSchema))
+        }
+        if (!(o instanceof EnumSchema)) {
             return false;
+        }
         EnumSchema that = (EnumSchema) o;
         return equalCachedHash(that) && equalNames(that) && symbols.equals(that.symbols) && propsEqual(that);
     }
@@ -66,19 +68,23 @@ class EnumSchema extends NamedSchema {
 
     @Override
     void toJson(Names names, JsonGenerator gen) throws IOException {
-        if (writeNameRef(names, gen))
+        if (writeNameRef(names, gen)) {
             return;
+        }
         gen.writeStartObject();
         gen.writeStringField("type", "enum");
         writeName(names, gen);
-        if (getDoc() != null)
+        if (getDoc() != null) {
             gen.writeStringField("doc", getDoc());
+        }
         gen.writeArrayFieldStart("symbols");
-        for (String symbol : symbols)
+        for (String symbol : symbols) {
             gen.writeString(symbol);
+        }
         gen.writeEndArray();
-        if (getEnumDefault() != null)
+        if (getEnumDefault() != null) {
             gen.writeStringField("default", getEnumDefault());
+        }
         writeProps(gen);
         aliasesToJson(gen);
         gen.writeEndObject();

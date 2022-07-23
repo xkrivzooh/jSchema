@@ -24,7 +24,8 @@ import org.junit.runners.Suite;
         StringableTest.class,
         PrimitiveTypeParserTest.class,
         SchemaParserTest.class,
-        TestJacksonUtils.class
+        TestJacksonUtils.class,
+        NestedClassSchemaTest.class
 })
 public class AllTest {
 }

@@ -88,14 +88,14 @@ public class NullableTest {
                 "  }, {\n" +
                 "    \"name\" : \"list\",\n" +
                 "    \"type\" : {\n" +
-                "      \"type\" : \"list\",\n" +
+                "      \"type\" : \"List\",\n" +
                 "      \"items\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.List\"\n" +
                 "    }\n" +
                 "  }, {\n" +
                 "    \"name\" : \"map\",\n" +
                 "    \"type\" : {\n" +
-                "      \"type\" : \"map\",\n" +
+                "      \"type\" : \"Map\",\n" +
                 "      \"keys\" : \"String\",\n" +
                 "      \"values\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Map\"\n" +
@@ -107,7 +107,7 @@ public class NullableTest {
                 "  }, {\n" +
                 "    \"name\" : \"set\",\n" +
                 "    \"type\" : {\n" +
-                "      \"type\" : \"set\",\n" +
+                "      \"type\" : \"Set\",\n" +
                 "      \"items\" : \"String\",\n" +
                 "      \"java-class\" : \"java.util.Set\"\n" +
                 "    }\n" +
