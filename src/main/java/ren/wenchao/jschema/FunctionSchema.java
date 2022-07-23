@@ -3,6 +3,7 @@ package ren.wenchao.jschema;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import ren.wenchao.jschema.constraints.Constraint;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -76,11 +77,11 @@ public class FunctionSchema {
     private void toJson(JsonGenerator gen) throws IOException {
         gen.writeStartObject();
 
-        gen.writeStringField("type","function");
-        gen.writeStringField("namespace",this.namespace);
-        gen.writeStringField("name",this.name);
-        gen.writeStringField("functionName",this.functionName);
-        gen.writeStringField("doc",this.doc);
+        gen.writeStringField("type", "function");
+        gen.writeStringField("namespace", this.namespace);
+        gen.writeStringField("name", this.name);
+        gen.writeStringField("functionName", this.functionName);
+        gen.writeStringField("doc", this.doc);
 
         gen.writeFieldName("request");
         gen.writeStartObject();
@@ -89,13 +90,28 @@ public class FunctionSchema {
             gen.writeStartObject();
 
             gen.writeStringField("doc", parameter.getDoc());
+
+            //props
+            gen.writeFieldName("props");
+            gen.writeStartObject();
             Map<String, String> props = parameter.getProps();
             if (props != null) {
                 for (Map.Entry<String, String> entry : props.entrySet()) {
                     gen.writeStringField(entry.getKey(), entry.getValue());
                 }
             }
+            gen.writeEndObject();
 
+            //Constraint
+            gen.writeFieldName("constraints");
+            gen.writeStartObject();
+            List<Constraint> constraints = parameter.getConstraints();
+            for (Constraint constraint : constraints) {
+                constraint.toJson(gen);
+            }
+            gen.writeEndObject();
+
+            //type
             gen.writeFieldName("type");
             TypeSchema schema = parameter.getSchema();
             schema.toJson(new Names(), gen);

@@ -46,10 +46,14 @@ public class FunctionSchemaTest {
                 "  \"request\" : {\n" +
                 "    \"arg0\" : {\n" +
                 "      \"doc\" : \"\",\n" +
+                "      \"props\" : { },\n" +
+                "      \"constraints\" : { },\n" +
                 "      \"type\" : \"int\"\n" +
                 "    },\n" +
                 "    \"arg1\" : {\n" +
                 "      \"doc\" : \"\",\n" +
+                "      \"props\" : { },\n" +
+                "      \"constraints\" : { },\n" +
                 "      \"type\" : \"long\"\n" +
                 "    }\n" +
                 "  },\n" +

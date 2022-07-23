@@ -2,6 +2,7 @@ package ren.wenchao.jschema;
 
 import org.junit.Assert;
 import org.junit.Test;
+import ren.wenchao.jschema.constraints.NotNull;
 
 public class FunctionSchemaBuilderTest {
 
@@ -12,7 +13,9 @@ public class FunctionSchemaBuilderTest {
         parameter3.setName("arg2");
         parameter3.setDoc("arg2Doc");
         parameter3.addProp("arg2K1", "arg2K2");
-        parameter3.setSchema(TypeSchema.getSchema(int.class));
+        parameter3.setSchema(TypeSchema.getSchema(Integer.class));
+        parameter3.addConstraint(new NotNull("arg2不能为空"));
+
 
         FunctionSchemaBuilder builder = FunctionSchemaBuilder.builder()
                 .namespace("ren.wenchao.jschema.FunctionSchemaTest")
@@ -34,16 +37,27 @@ public class FunctionSchemaBuilderTest {
                 "  \"request\" : {\n" +
                 "    \"arg0\" : {\n" +
                 "      \"doc\" : \"arg0Doc\",\n" +
+                "      \"props\" : { },\n" +
+                "      \"constraints\" : { },\n" +
                 "      \"type\" : \"int\"\n" +
                 "    },\n" +
                 "    \"arg1\" : {\n" +
                 "      \"doc\" : \"arg1Doc\",\n" +
+                "      \"props\" : { },\n" +
+                "      \"constraints\" : { },\n" +
                 "      \"type\" : \"int\"\n" +
                 "    },\n" +
                 "    \"arg2\" : {\n" +
                 "      \"doc\" : \"arg2Doc\",\n" +
-                "      \"arg2K1\" : \"arg2K2\",\n" +
-                "      \"type\" : \"int\"\n" +
+                "      \"props\" : {\n" +
+                "        \"arg2K1\" : \"arg2K2\"\n" +
+                "      },\n" +
+                "      \"constraints\" : {\n" +
+                "        \"NotNull\" : {\n" +
+                "          \"message\" : \"arg2不能为空\"\n" +
+                "        }\n" +
+                "      },\n" +
+                "      \"type\" : \"Integer\"\n" +
                 "    }\n" +
                 "  },\n" +
                 "  \"response\" : \"int\"\n" +
