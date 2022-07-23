@@ -1,14 +1,16 @@
 package ren.wenchao.jschema;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import ren.wenchao.jschema.constraints.Constraint;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 public class FunctionSchema {
 
@@ -53,6 +55,67 @@ public class FunctionSchema {
         return functionSchema;
     }
 
+    public List<String> validate(JsonNode parameterValueNode, boolean failFast) {
+        if (parameterValueNode == null) {
+            if (request.size() == 0) {
+                return Lists.newArrayList();
+            } else {
+                throw new SchemaRuntimeException("function need at last 1 parameter values");
+            }
+        }
+
+        List<String> errors = Lists.newArrayList();
+        for (Parameter parameter : request) {
+            List<Constraint> constraints = parameter.getConstraints();
+            if ((constraints != null) && (constraints.size() > 0)) {
+                JsonNode jsonNode = parameterValueNode.get(parameter.getName());
+                for (Constraint constraint : constraints) {
+                    boolean validate = constraint.validate(jsonNode);
+                    if (!validate) {
+                        errors.add(constraint.validateFieldMessage());
+                        if (failFast) {
+                            return errors;
+                        }
+                    }
+                }
+            }
+        }
+        return errors;
+    }
+
+    public List<String> validate(List<Object> parameterValues, boolean failFast) {
+        if (parameterValues == null) {
+            if (request.size() == 0) {
+                return Lists.newArrayList();
+            } else {
+                throw new SchemaRuntimeException("function need at last 1 parameter values");
+            }
+        }
+
+        if (request.size() != parameterValues.size()) {
+            throw new SchemaRuntimeException("function parameter size not match given parameter values");
+        }
+
+        List<String> errors = Lists.newArrayList();
+        for (int i = 0; i < request.size(); i++) {
+            Parameter parameter = request.get(i);
+            List<Constraint> constraints = parameter.getConstraints();
+            if ((constraints != null) && (constraints.size() > 0)) {
+                Object value = parameterValues.get(i);
+                for (Constraint constraint : constraints) {
+                    boolean validate = constraint.validate(value);
+                    if (!validate) {
+                        errors.add(constraint.validateFieldMessage());
+                        if (failFast) {
+                            return errors;
+                        }
+                    }
+                }
+            }
+        }
+        return errors;
+    }
+
     @Override
     public String toString() {
         return toString(true);
@@ -76,18 +139,46 @@ public class FunctionSchema {
     private void toJson(JsonGenerator gen) throws IOException {
         gen.writeStartObject();
 
-        gen.writeStringField("type","function");
-        gen.writeStringField("namespace",this.namespace);
-        gen.writeStringField("name",this.name);
-        gen.writeStringField("functionName",this.functionName);
-        gen.writeStringField("doc",this.doc);
+        gen.writeStringField("type", "function");
+        gen.writeStringField("namespace", this.namespace);
+        gen.writeStringField("name", this.name);
+        gen.writeStringField("functionName", this.functionName);
+        gen.writeStringField("doc", this.doc);
 
         gen.writeFieldName("request");
         gen.writeStartObject();
         for (Parameter parameter : request) {
             gen.writeFieldName(parameter.getName());
+            gen.writeStartObject();
+
+            gen.writeStringField("doc", parameter.getDoc());
+
+            //props
+            gen.writeFieldName("props");
+            gen.writeStartObject();
+            Map<String, String> props = parameter.getProps();
+            if (props != null) {
+                for (Map.Entry<String, String> entry : props.entrySet()) {
+                    gen.writeStringField(entry.getKey(), entry.getValue());
+                }
+            }
+            gen.writeEndObject();
+
+            //Constraint
+            gen.writeFieldName("constraints");
+            gen.writeStartObject();
+            List<Constraint> constraints = parameter.getConstraints();
+            for (Constraint constraint : constraints) {
+                constraint.toJson(gen);
+            }
+            gen.writeEndObject();
+
+            //type
+            gen.writeFieldName("type");
             TypeSchema schema = parameter.getSchema();
             schema.toJson(new Names(), gen);
+
+            gen.writeEndObject();
         }
         gen.writeEndObject();
 
@@ -147,12 +238,6 @@ public class FunctionSchema {
 
     public void setResponse(TypeSchema response) {
         this.response = response;
-    }
-
-    public static void main(String[] args) throws NoSuchMethodException, JsonProcessingException {
-        Method getSchema = FunctionSchema.class.getMethod("getSchema", Method.class);
-        FunctionSchema schema = getSchema(getSchema);
-        System.out.println(schema.toString(true));
     }
 }
 
