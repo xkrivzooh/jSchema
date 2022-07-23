@@ -60,9 +60,15 @@ public class CollectionSchemaParserTest extends BaseTest {
                 "}", s);
     }
 
+    static enum Enum {
+        a,b
+    }
+
     static class B {
         int a;
         Integer a1;
+        short aa;
+        Short aa1;
         byte b;
         Byte b1;
         boolean c;
@@ -73,11 +79,15 @@ public class CollectionSchemaParserTest extends BaseTest {
         Double e1;
         char f;
         Character f1;
+        String ss;
+        long ll;
+        Long ll1;
         Object h;
         List<Integer> i;
         Map<Integer, Integer> g;
         Set<Integer> k;
         Object[] objs;
+        Enum anEnum;
     }
 
     @Test
@@ -87,4 +97,41 @@ public class CollectionSchemaParserTest extends BaseTest {
         String parsed = parse(prettySchemaString).toString(true);
         Assert.assertEquals(prettySchemaString, parsed);
     }
+
+
+    static class C {
+//        int a;
+//        Integer a1;
+//        short aa;
+//        Short aa1;
+//        byte b;
+//        Byte b1;
+//        boolean c;
+//        Boolean c1;
+//        float d;
+//        Float d1;
+//        double e;
+//        Double e1;
+//        char f;
+//        Character f1;
+//        String ss;
+//        long ll;
+//        Long ll1;
+//        Object h;
+//        List<Integer> i;
+//        Map<Integer, Integer> g;
+//        Set<Integer> k;
+        Object[] objs;
+//        Enum anEnum;
+        B bObject;
+    }
+
+    @Test
+    public void test4() {
+        String prettySchemaString = getPrettySchemaString(C.class);
+        String parsed = parse(prettySchemaString).toString(true);
+        System.out.println(parsed);
+        Assert.assertEquals(prettySchemaString, parsed);
+    }
+
 }
