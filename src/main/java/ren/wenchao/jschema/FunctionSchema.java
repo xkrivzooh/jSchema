@@ -1,7 +1,6 @@
 package ren.wenchao.jschema;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
@@ -161,12 +160,6 @@ public class FunctionSchema {
 
     public void setResponse(TypeSchema response) {
         this.response = response;
-    }
-
-    public static void main(String[] args) throws NoSuchMethodException, JsonProcessingException {
-        Method getSchema = FunctionSchema.class.getMethod("getSchema", Method.class);
-        FunctionSchema schema = getSchema(getSchema);
-        System.out.println(schema.toString(true));
     }
 }
 
