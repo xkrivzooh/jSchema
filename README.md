@@ -18,4 +18,4 @@ coming soon
 
 ## License
 
-[Apache License 2.0]()
+[Apache License 2.0](https://github.com/xkrivzooh/jSchema/blob/main/LICENSE)
