@@ -26,7 +26,8 @@ import org.junit.runners.Suite;
         SchemaParserTest.class,
         TestJacksonUtils.class,
         NestedClassSchemaTest.class,
-        FunctionSchemaTest.class
+        FunctionSchemaTest.class,
+        FunctionSchemaBuilderTest.class
 })
 public class AllTest {
 }

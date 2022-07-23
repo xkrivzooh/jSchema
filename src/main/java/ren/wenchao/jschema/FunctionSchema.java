@@ -8,7 +8,6 @@ import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.List;
 
 public class FunctionSchema {
@@ -17,17 +16,17 @@ public class FunctionSchema {
     private String name;
     private String functionName;
     private String doc;
-    private List<Parmeter> request = Lists.newArrayList();
+    private List<Parameter> request = Lists.newArrayList();
     private TypeSchema response;
 
 
     public static FunctionSchema getSchema(Method method) {
         Preconditions.checkNotNull(method);
 
-        Parameter[] parameters = method.getParameters();
-        List<Parmeter> request = Lists.newArrayListWithExpectedSize(parameters.length);
-        for (Parameter parameter : parameters) {
-            Parmeter item = new Parmeter();
+        java.lang.reflect.Parameter[] parameters = method.getParameters();
+        List<Parameter> request = Lists.newArrayListWithExpectedSize(parameters.length);
+        for (java.lang.reflect.Parameter parameter : parameters) {
+            Parameter item = new Parameter();
             item.setName(parameter.getName());
             item.setDoc("");
             item.setSchema(TypeSchema.getSchema(parameter.getType()));
@@ -85,9 +84,9 @@ public class FunctionSchema {
 
         gen.writeFieldName("request");
         gen.writeStartObject();
-        for (Parmeter parmeter : request) {
-            gen.writeFieldName(parmeter.getName());
-            TypeSchema schema = parmeter.getSchema();
+        for (Parameter parameter : request) {
+            gen.writeFieldName(parameter.getName());
+            TypeSchema schema = parameter.getSchema();
             schema.toJson(new Names(), gen);
         }
         gen.writeEndObject();
@@ -130,12 +129,16 @@ public class FunctionSchema {
         this.doc = doc;
     }
 
-    public List<Parmeter> getRequest() {
+    public List<Parameter> getRequest() {
         return request;
     }
 
-    public void setRequest(List<Parmeter> request) {
+    public void setRequest(List<Parameter> request) {
         this.request = request;
+    }
+
+    public void addParameter(Parameter parameter) {
+        this.request.add(parameter);
     }
 
     public TypeSchema getResponse() {

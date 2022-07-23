@@ -1,6 +1,6 @@
 package ren.wenchao.jschema;
 
-public class Parmeter {
+public class Parameter {
     private String name;
     private String doc;
     private TypeSchema schema;
