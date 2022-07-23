@@ -22,4 +22,14 @@ public class NotNull implements Constraint {
         gen.writeStringField("message", message);
         gen.writeEndObject();
     }
+
+    @Override
+    public boolean validate(Object value) {
+        return value != null;
+    }
+
+    @Override
+    public String validateFieldMessage() {
+        return message;
+    }
 }

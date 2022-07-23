@@ -54,6 +54,39 @@ public class FunctionSchema {
         return functionSchema;
     }
 
+    public List<String> validate(List<Object> parameterValues, boolean failFast) {
+        if (parameterValues == null) {
+            if (request.size() == 0) {
+                return Lists.newArrayList();
+            } else {
+                throw new SchemaRuntimeException("function need at last 1 parameter values");
+            }
+        }
+
+        if (request.size() != parameterValues.size()) {
+            throw new SchemaRuntimeException("function parameter size not match given parameter values");
+        }
+
+        List<String> errors = Lists.newArrayList();
+        for (int i = 0; i < request.size(); i++) {
+            Parameter parameter = request.get(i);
+            List<Constraint> constraints = parameter.getConstraints();
+            if ((constraints != null) && (constraints.size() > 0)) {
+                Object value = parameterValues.get(i);
+                for (Constraint constraint : constraints) {
+                    boolean validate = constraint.validate(value);
+                    if (!validate) {
+                        errors.add(constraint.validateFieldMessage());
+                        if (failFast) {
+                            return errors;
+                        }
+                    }
+                }
+            }
+        }
+        return errors;
+    }
+
     @Override
     public String toString() {
         return toString(true);
