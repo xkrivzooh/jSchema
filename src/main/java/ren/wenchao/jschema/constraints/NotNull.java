@@ -1,6 +1,7 @@
 package ren.wenchao.jschema.constraints;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
 
@@ -21,6 +22,11 @@ public class NotNull implements Constraint {
         gen.writeStartObject();
         gen.writeStringField("message", message);
         gen.writeEndObject();
+    }
+
+    @Override
+    public boolean validate(JsonNode valueNode) {
+        return valueNode != null;
     }
 
     @Override

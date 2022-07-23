@@ -1,6 +1,7 @@
 package ren.wenchao.jschema;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import ren.wenchao.jschema.constraints.Constraint;
@@ -52,6 +53,34 @@ public class FunctionSchema {
         functionSchema.setRequest(request);
         functionSchema.setResponse(returnTypeSchema);
         return functionSchema;
+    }
+
+    public List<String> validate(JsonNode parameterValueNode, boolean failFast) {
+        if (parameterValueNode == null) {
+            if (request.size() == 0) {
+                return Lists.newArrayList();
+            } else {
+                throw new SchemaRuntimeException("function need at last 1 parameter values");
+            }
+        }
+
+        List<String> errors = Lists.newArrayList();
+        for (Parameter parameter : request) {
+            List<Constraint> constraints = parameter.getConstraints();
+            if ((constraints != null) && (constraints.size() > 0)) {
+                JsonNode jsonNode = parameterValueNode.get(parameter.getName());
+                for (Constraint constraint : constraints) {
+                    boolean validate = constraint.validate(jsonNode);
+                    if (!validate) {
+                        errors.add(constraint.validateFieldMessage());
+                        if (failFast) {
+                            return errors;
+                        }
+                    }
+                }
+            }
+        }
+        return errors;
     }
 
     public List<String> validate(List<Object> parameterValues, boolean failFast) {
