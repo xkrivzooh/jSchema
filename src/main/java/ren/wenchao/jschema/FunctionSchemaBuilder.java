@@ -14,7 +14,7 @@ public class FunctionSchemaBuilder {
     }
 
     public FunctionSchemaBuilder namespace(String namespace) {
-        functionSchema.setFunctionName(namespace);
+        functionSchema.setNamespace(namespace);
         return this;
     }
 
