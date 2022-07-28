@@ -15,6 +15,7 @@ public class FunctionSchemaBuilderTest {
         parameter3.addProp("arg2K1", "arg2K2");
         parameter3.setSchema(TypeSchema.getSchema(Integer.class));
         parameter3.addConstraint(new NotNull("arg2不能为空"));
+        parameter3.setDefaultValue("1");
 
 
         FunctionSchemaBuilder builder = FunctionSchemaBuilder.builder()
@@ -30,7 +31,7 @@ public class FunctionSchemaBuilderTest {
         System.out.println(functionSchema.toString(true));
         Assert.assertEquals("{\n" +
                 "  \"type\" : \"function\",\n" +
-                "  \"namespace\" : null,\n" +
+                "  \"namespace\" : \"ren.wenchao.jschema.FunctionSchemaTest\",\n" +
                 "  \"name\" : \"A\",\n" +
                 "  \"functionName\" : \"f1\",\n" +
                 "  \"doc\" : \"doc\",\n" +
@@ -57,7 +58,8 @@ public class FunctionSchemaBuilderTest {
                 "          \"message\" : \"arg2不能为空\"\n" +
                 "        }\n" +
                 "      },\n" +
-                "      \"type\" : \"Integer\"\n" +
+                "      \"type\" : \"Integer\",\n" +
+                "      \"default\" : \"1\"\n" +
                 "    }\n" +
                 "  },\n" +
                 "  \"response\" : \"int\"\n" +
