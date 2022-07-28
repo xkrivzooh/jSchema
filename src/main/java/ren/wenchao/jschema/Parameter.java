@@ -13,6 +13,7 @@ public class Parameter {
     private final Map<String, String> props = Maps.newHashMap();
     private final List<Constraint> constraints = Lists.newArrayList();
     private TypeSchema schema;
+    private String defaultValue;
 
     public String getName() {
         return name;
@@ -56,5 +57,13 @@ public class Parameter {
 
     public Map<String, String> getProps() {
         return props;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

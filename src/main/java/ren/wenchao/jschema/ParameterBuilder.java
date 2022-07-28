@@ -52,6 +52,11 @@ public class ParameterBuilder {
         return this;
     }
 
+    public ParameterBuilder defaultValue(String defaultValue) {
+        parameter.setDefaultValue(defaultValue);
+        return this;
+    }
+
     public Parameter build() {
         return parameter;
     }

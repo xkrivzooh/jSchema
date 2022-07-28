@@ -178,6 +178,11 @@ public class FunctionSchema {
             TypeSchema schema = parameter.getSchema();
             schema.toJson(new Names(), gen);
 
+            //default value
+            if (parameter.getDefaultValue() != null) {
+                gen.writeStringField("default", parameter.getDefaultValue());
+            }
+
             gen.writeEndObject();
         }
         gen.writeEndObject();
