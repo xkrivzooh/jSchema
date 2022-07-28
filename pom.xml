@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ren.wenchao</groupId>
-    <artifactId>jSchema</artifactId>
+    <artifactId>jschema</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
