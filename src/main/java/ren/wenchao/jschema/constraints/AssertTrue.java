@@ -26,8 +26,9 @@ public class AssertTrue implements Constraint {
 
     @Override
     public boolean validate(JsonNode valueNode) {
+        //null values are valid
         if (valueNode == null) {
-            return false;
+            return true;
         }
         if (!valueNode.isBoolean()) {
             return false;
@@ -37,8 +38,9 @@ public class AssertTrue implements Constraint {
 
     @Override
     public boolean validate(Object value) {
+        //null values are valid
         if (value == null) {
-            return false;
+            return true;
         }
         if (!boolean.class.isAssignableFrom(value.getClass())) {
             return false;
