@@ -9,7 +9,7 @@ public class NotNull implements Constraint {
     private final String message;
 
     public NotNull() {
-        this.message = "";
+        this.message = "值不能为null";
     }
 
     public NotNull(String message) {
