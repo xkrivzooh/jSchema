@@ -6,20 +6,20 @@ import com.google.common.base.Strings;
 
 import java.io.IOException;
 
-public class NotNull implements Constraint {
+public class Null implements Constraint {
     private final String message;
 
-    public NotNull() {
-        this.message = "值不能为null";
+    public Null() {
+        this.message = "值必须为null";
     }
 
-    public NotNull(String message) {
+    public Null(String message) {
         this.message = message;
     }
 
     @Override
     public void toJson(JsonGenerator gen) throws IOException {
-        gen.writeFieldName("NotNull");
+        gen.writeFieldName("Null");
         gen.writeStartObject();
         gen.writeStringField("message", message);
         gen.writeEndObject();
@@ -27,12 +27,12 @@ public class NotNull implements Constraint {
 
     @Override
     public boolean validate(JsonNode valueNode) {
-        return (valueNode != null) && (!valueNode.isNull());
+        return valueNode == null || valueNode.isNull();
     }
 
     @Override
     public boolean validate(Object value) {
-        return value != null;
+        return value == null;
     }
 
     @Override
