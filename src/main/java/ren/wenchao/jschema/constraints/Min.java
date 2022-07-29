@@ -7,21 +7,16 @@ import com.google.common.base.Strings;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-public class DecimalMin implements Constraint{
+public class Min implements Constraint {
+
     private final BigDecimal minValue;
-    private final boolean inclusive;
     private final String message;
 
-
-    public DecimalMin(String value) {
-        this(value, true, "");
+    public Min(String maxValue) {
+        this(maxValue, "");
     }
 
-    public DecimalMin(String value, String message) {
-        this(value, true, message);
-    }
-
-    public DecimalMin(String value, boolean inclusive, String message) {
+    public Min(String value, String message) {
         BigDecimal minValue1;
         try {
             minValue1 = new BigDecimal(value);
@@ -29,16 +24,15 @@ public class DecimalMin implements Constraint{
             minValue1 = null;
         }
         this.minValue = minValue1;
-        this.inclusive = inclusive;
         this.message = message;
     }
 
+
     @Override
     public void toJson(JsonGenerator gen) throws IOException {
-        gen.writeFieldName("DecimalMin");
+        gen.writeFieldName("Min");
         gen.writeStartObject();
-        gen.writeStringField("maxValue", minValue.toString());
-        gen.writeStringField("inclusive", String.valueOf(inclusive));
+        gen.writeStringField("minValue", minValue.toString());
         gen.writeStringField("message", getMessage());
         gen.writeEndObject();
     }
@@ -49,10 +43,8 @@ public class DecimalMin implements Constraint{
         if (valueNode == null || valueNode.isNull()) {
             return true;
         }
-
         try {
-            int comparisonResult = new BigDecimal(valueNode.toString()).compareTo(minValue);
-            return inclusive ? comparisonResult >= 0 : comparisonResult > 0;
+            return new BigDecimal(valueNode.toString()).compareTo(minValue) != -1;
         } catch (NumberFormatException nfe) {
             return false;
         }
@@ -64,10 +56,8 @@ public class DecimalMin implements Constraint{
         if (value == null) {
             return true;
         }
-
         try {
-            int comparisonResult = new BigDecimal(value.toString()).compareTo(minValue);
-            return inclusive ? comparisonResult >= 0 : comparisonResult > 0;
+            return new BigDecimal(value.toString()).compareTo(minValue) != -1;
         } catch (NumberFormatException nfe) {
             return false;
         }
@@ -80,11 +70,7 @@ public class DecimalMin implements Constraint{
 
     private String getMessage() {
         if (Strings.isNullOrEmpty(message)) {
-            if (inclusive) {
-                return String.format("必须是数字，且值必须大于等于%s", minValue.toString());
-            } else {
-                return String.format("必须是数字，且值必须大于%s", minValue.toString());
-            }
+            return String.format("必须是数字，且值必须大于等于%s", minValue.toString());
         }
         return message;
     }

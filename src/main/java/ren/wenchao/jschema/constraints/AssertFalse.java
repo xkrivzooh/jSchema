@@ -27,7 +27,7 @@ public class AssertFalse implements Constraint{
     @Override
     public boolean validate(JsonNode valueNode) {
         //null values are valid
-        if (valueNode == null) {
+        if (valueNode == null || valueNode.isNull()) {
             return true;
         }
         if (!valueNode.isBoolean()) {

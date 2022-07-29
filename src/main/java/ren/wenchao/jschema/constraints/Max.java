@@ -7,20 +7,15 @@ import com.google.common.base.Strings;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-public class DecimalMax implements Constraint {
+public class Max implements Constraint {
     private final BigDecimal maxValue;
-    private final boolean inclusive;
     private final String message;
 
-    public DecimalMax(String value) {
-        this(value, true, "");
+    public Max(String maxValue) {
+        this(maxValue, "");
     }
 
-    public DecimalMax(String value, String message) {
-        this(value, true, message);
-    }
-
-    public DecimalMax(String value, boolean inclusive, String message) {
+    public Max(String value, String message) {
         BigDecimal maxValue1;
         try {
             maxValue1 = new BigDecimal(value);
@@ -28,16 +23,15 @@ public class DecimalMax implements Constraint {
             maxValue1 = null;
         }
         this.maxValue = maxValue1;
-        this.inclusive = inclusive;
         this.message = message;
     }
 
+
     @Override
     public void toJson(JsonGenerator gen) throws IOException {
-        gen.writeFieldName("DecimalMax");
+        gen.writeFieldName("Max");
         gen.writeStartObject();
         gen.writeStringField("maxValue", maxValue.toString());
-        gen.writeStringField("inclusive", String.valueOf(inclusive));
         gen.writeStringField("message", getMessage());
         gen.writeEndObject();
     }
@@ -48,10 +42,8 @@ public class DecimalMax implements Constraint {
         if (valueNode == null || valueNode.isNull()) {
             return true;
         }
-
         try {
-            int comparisonResult = new BigDecimal(valueNode.toString()).compareTo(maxValue);
-            return inclusive ? comparisonResult <= 0 : comparisonResult < 0;
+            return new BigDecimal(valueNode.toString()).compareTo(maxValue) != 1;
         } catch (NumberFormatException nfe) {
             return false;
         }
@@ -63,10 +55,8 @@ public class DecimalMax implements Constraint {
         if (value == null) {
             return true;
         }
-
         try {
-            int comparisonResult = new BigDecimal(value.toString()).compareTo(maxValue);
-            return inclusive ? comparisonResult <= 0 : comparisonResult < 0;
+            return new BigDecimal(value.toString()).compareTo(maxValue) != 1;
         } catch (NumberFormatException nfe) {
             return false;
         }
@@ -79,11 +69,7 @@ public class DecimalMax implements Constraint {
 
     private String getMessage() {
         if (Strings.isNullOrEmpty(message)) {
-            if (inclusive) {
-                return String.format("必须是数字，且值必须小于等于%s", maxValue.toString());
-            } else {
-                return String.format("必须是数字，且值必须小于%s", maxValue.toString());
-            }
+            return String.format("必须是数字，且值必须小于等于%s", maxValue.toString());
         }
         return message;
     }
