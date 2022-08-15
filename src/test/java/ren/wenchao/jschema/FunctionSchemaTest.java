@@ -51,13 +51,15 @@ public class FunctionSchemaTest {
                 "      \"doc\" : \"\",\n" +
                 "      \"props\" : { },\n" +
                 "      \"constraints\" : { },\n" +
-                "      \"type\" : \"int\"\n" +
+                "      \"type\" : \"int\",\n" +
+                "      \"pos\" : \"0\"\n" +
                 "    },\n" +
                 "    \"arg1\" : {\n" +
                 "      \"doc\" : \"\",\n" +
                 "      \"props\" : { },\n" +
                 "      \"constraints\" : { },\n" +
-                "      \"type\" : \"long\"\n" +
+                "      \"type\" : \"long\",\n" +
+                "      \"pos\" : \"1\"\n" +
                 "    }\n" +
                 "  },\n" +
                 "  \"response\" : \"String\"\n" +

@@ -147,6 +147,8 @@ public class FunctionSchema {
 
         gen.writeFieldName("request");
         gen.writeStartObject();
+
+        int pos = 0;
         for (Parameter parameter : request) {
             gen.writeFieldName(parameter.getName());
             gen.writeStartObject();
@@ -182,6 +184,7 @@ public class FunctionSchema {
             if (parameter.getDefaultValue() != null) {
                 gen.writeStringField("default", parameter.getDefaultValue());
             }
+            gen.writeStringField("pos", String.valueOf(pos++));
 
             gen.writeEndObject();
         }

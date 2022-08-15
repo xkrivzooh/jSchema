@@ -40,13 +40,15 @@ public class FunctionSchemaBuilderTest {
                 "      \"doc\" : \"arg0Doc\",\n" +
                 "      \"props\" : { },\n" +
                 "      \"constraints\" : { },\n" +
-                "      \"type\" : \"int\"\n" +
+                "      \"type\" : \"int\",\n" +
+                "      \"pos\" : \"0\"\n" +
                 "    },\n" +
                 "    \"arg1\" : {\n" +
                 "      \"doc\" : \"arg1Doc\",\n" +
                 "      \"props\" : { },\n" +
                 "      \"constraints\" : { },\n" +
-                "      \"type\" : \"int\"\n" +
+                "      \"type\" : \"int\",\n" +
+                "      \"pos\" : \"1\"\n" +
                 "    },\n" +
                 "    \"arg2\" : {\n" +
                 "      \"doc\" : \"arg2Doc\",\n" +
@@ -59,7 +61,8 @@ public class FunctionSchemaBuilderTest {
                 "        }\n" +
                 "      },\n" +
                 "      \"type\" : \"Integer\",\n" +
-                "      \"default\" : \"1\"\n" +
+                "      \"default\" : \"1\",\n" +
+                "      \"pos\" : \"2\"\n" +
                 "    }\n" +
                 "  },\n" +
                 "  \"response\" : \"int\"\n" +
