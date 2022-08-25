@@ -15,4 +15,14 @@ public interface Constraint {
 
     String validateFieldMessage();
 
+    static String safeGetTextValue(JsonNode node, String key) {
+        if (node == null) {
+            return "";
+        }
+        JsonNode value = node.get(key);
+        if (value == null) {
+            return "";
+        }
+        return value.asText();
+    }
 }

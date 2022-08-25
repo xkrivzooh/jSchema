@@ -2,6 +2,7 @@ package ren.wenchao.jschema.constraints;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import java.io.IOException;
@@ -25,6 +26,13 @@ public class Min implements Constraint {
         }
         this.minValue = minValue1;
         this.message = message;
+    }
+
+    public static Constraint resolve(JsonNode value) {
+        Preconditions.checkArgument((value != null) && (!value.isNull()));
+        String minValue = Constraint.safeGetTextValue(value, "minValue");
+        String message = Constraint.safeGetTextValue(value, "message");
+        return new Min(minValue, message);
     }
 
 

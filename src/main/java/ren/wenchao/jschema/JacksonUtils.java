@@ -188,4 +188,26 @@ class JacksonUtils {
     public static Object parseJsonToObject(String s) {
         return JacksonUtils.toObject(JacksonUtils.parseJson(s));
     }
+
+    public static String safeGetTextValue(JsonNode node, String key) {
+        if (node == null) {
+            return "";
+        }
+        JsonNode value = node.get(key);
+        if (value == null) {
+            return "";
+        }
+        return value.asText();
+    }
+
+    public static String safeGetValue(JsonNode node, String key) {
+        if (node == null) {
+            return "";
+        }
+        JsonNode value = node.get(key);
+        if (value == null) {
+            return "";
+        }
+        return value.toString();
+    }
 }

@@ -2,6 +2,7 @@ package ren.wenchao.jschema.constraints;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import java.io.IOException;
@@ -15,6 +16,12 @@ public class Null implements Constraint {
 
     public Null(String message) {
         this.message = message;
+    }
+
+    public static Constraint resolve(JsonNode value) {
+        Preconditions.checkArgument((value != null) && (!value.isNull()));
+        String message = Constraint.safeGetTextValue(value, "message");
+        return new Null(message);
     }
 
     @Override
