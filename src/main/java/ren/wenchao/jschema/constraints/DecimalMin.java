@@ -2,12 +2,13 @@ package ren.wenchao.jschema.constraints;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 
-public class DecimalMin implements Constraint{
+public class DecimalMin implements Constraint {
     private final BigDecimal minValue;
     private final boolean inclusive;
     private final String message;
@@ -31,6 +32,14 @@ public class DecimalMin implements Constraint{
         this.minValue = minValue1;
         this.inclusive = inclusive;
         this.message = message;
+    }
+
+    public static Constraint resolve(JsonNode value) {
+        Preconditions.checkArgument((value != null) && (!value.isNull()));
+        String minValue = Constraint.safeGetTextValue(value, "minValue");
+        String inclusive = Constraint.safeGetTextValue(value, "inclusive");
+        String message = Constraint.safeGetTextValue(value, "message");
+        return new DecimalMin(minValue, Boolean.parseBoolean(inclusive), message);
     }
 
     @Override

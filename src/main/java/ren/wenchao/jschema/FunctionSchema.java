@@ -21,6 +21,8 @@ public class FunctionSchema {
     private List<Parameter> request = Lists.newArrayList();
     private TypeSchema response;
 
+    public static final String TYPE = "function";
+
 
     public static FunctionSchema getSchema(Method method) {
         Preconditions.checkNotNull(method);
@@ -139,7 +141,7 @@ public class FunctionSchema {
     private void toJson(JsonGenerator gen) throws IOException {
         gen.writeStartObject();
 
-        gen.writeStringField("type", "function");
+        gen.writeStringField("type", TYPE);
         gen.writeStringField("namespace", this.namespace);
         gen.writeStringField("name", this.name);
         gen.writeStringField("functionName", this.functionName);
