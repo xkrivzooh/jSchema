@@ -12,7 +12,7 @@ jSchema is a Schema specially designed and developed for the Java ecosystem. It 
 - Type structure description, supports a variety of built-in annotations, such as @NotNull/@Default/@Alias/@Doc/@Meta/@Ignore…
 - Supports the JSR 380 (also known as Bean Validation 2.0) specification and provides an easy-to-use data validation implementation.
 
-## Documentation
+## Specification
 
 coming soon
 
