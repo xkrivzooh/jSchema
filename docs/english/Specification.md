@@ -12,7 +12,7 @@ A Schema is represented in JSON by one of:
 - A JSON string, naming a defined type.
 - A JSON object, of the form:
 
-```json
+```
 {
   "type": "typeName"
   ...attributes...

@@ -14,7 +14,12 @@ jSchema is a Schema specially designed and developed for the Java ecosystem. It 
 
 ## Specification
 
-coming soon
+[Specification](https://github.com/xkrivzooh/jSchema/blob/main/docs/english/Specification.md)
+
+## 中文文档
+
+- [Schema分类](https://github.com/xkrivzooh/jSchema/blob/main/docs/chinese/SchemaCategory.md)
+- [Schema类型](https://github.com/xkrivzooh/jSchema/blob/main/docs/chinese/SchemaTypes.md)
 
 ## License
 
