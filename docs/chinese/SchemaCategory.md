@@ -56,7 +56,7 @@ public class TypeSchemaTest {
 
 ## FunctionSchema
 
-FunctionSchema主要用来描述java中的函数的。
+FunctionSchema主要用来描述java中的函数结构的。
 
 ### 生成FunctionSchema
 

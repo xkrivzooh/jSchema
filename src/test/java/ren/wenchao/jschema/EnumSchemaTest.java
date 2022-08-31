@@ -4,11 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class EnumSchemaTest {
-    public static enum A {
+    public enum A {
         a, b
     }
 
-    public static enum B {
+    public enum B {
         a("a");
         private final String name;
 
