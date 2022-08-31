@@ -1,11 +1,11 @@
-## Specification
+# Specification
 
-### Introduction
+## Introduction
 
 This document defines jSchema. It is intended to be the authoritative specification. Implementations of jSchema must
 adhere to this document.
 
-### Schema Declaration
+## Schema Declaration
 
 A Schema is represented in JSON by one of:
 
@@ -22,17 +22,17 @@ A Schema is represented in JSON by one of:
 where typeName is either a primitive or derived type name, as defined below. Attributes not defined in this document are
 permitted as metadata, but must not affect the format of serialized data.
 
-### Schema Category
+## Schema Category
 
 jSchema supports two kinds of schemas:
 - TypeSchema
 - FunctionSchema
 
-#### TypeSchema
+### TypeSchema
 
 TypeSchema is mainly used to describe types in Java. Such as primitive types, arrays, collections, custom classes, etc.
 
-##### Generate TypeSchema
+#### Generate TypeSchema
 
 Generating TypeSchema requires using the `TypeSchema.getSchema` function. The simple usage is as follows:
 
@@ -73,11 +73,11 @@ The content of the TypeSchema corresponding to the `User` object in the sample c
 }
 ```
 
-#### FunctionSchema
+### FunctionSchema
 
 FunctionSchema is mainly used to describe the function structure in java.
 
-##### Generate FunctionSchema
+#### Generate FunctionSchema
 
 If we already have an object of type `java.lang.reflect.Method` in the context, we will use `FunctionSchema.getSchema`
 method to generate FunctionSchema, for example:
@@ -185,9 +185,9 @@ public class FunctionSchemaBuilderTest {
 }
 ```
 
-### Schema Types
+## Schema Types
 
-#### Primitive Types
+### Primitive Types
 
 | jSchema type string representation |    Java Type     |
 |:-----------------------------------|:----------------:|
@@ -201,7 +201,7 @@ public class FunctionSchemaBuilderTest {
 | char                               |       char       |
 | String                             | java.lang.String |
 
-#### Wrapper Types
+### Wrapper Types
 
 | jSchema type string representation |   SchemaType    |     Java Types      |
 |------------------------------------|:---------------:|:-------------------:|
@@ -214,7 +214,7 @@ public class FunctionSchemaBuilderTest {
 | Boolean                            | BOOLEAN_WRAPPER |  java.lang.Boolean  |
 | Character                          |  CHAR_WRAPPER   | java.lang.Character |
 
-#### Collection Types
+### Collection Types
 
 
 | jSchema type string representation |     Java类型     |
@@ -224,9 +224,9 @@ public class FunctionSchemaBuilderTest {
 |                List                | java.util.List |
 |                Set                 | java.util.Set  |
 
-#### Other Types
+### Other Types
 
-##### record
+#### record
 
 - Records use the type name `record` and support the following attributes:
 - name: a JSON string providing the name of the record (required). 
@@ -260,7 +260,7 @@ For example, a record type schema may be defined with:
 }
 ```
 
-##### enum
+#### enum
 
 `enum` indicates that the type is an enumeration type。
 
@@ -287,15 +287,15 @@ The corresponding schema of this enum B is expressed as follows:
 }
 ```
 
-##### bytes
+#### bytes
 
 `bytes` indicates that this is a byte array type
 
-##### null
+#### null
 
 `null` indicates that the type is null, which corresponds to the `null` keyword in java
 
-##### void
+#### void
 
 `void` indicates that the type is void, corresponding to the `void` keyword in java
 
